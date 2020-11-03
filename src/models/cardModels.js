@@ -16,6 +16,11 @@ export const Card = types.model({
             return `${self.rank} of ${self.suit}`
         }
     }))
+    .actions(self =>({
+        flip() {
+            self.flipped = !self.flipped
+        },
+    }))
 
 export const Hand = types.model({
     cards: types.optional(types.array(Card), [])

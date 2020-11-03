@@ -1,5 +1,8 @@
 import React from 'react';
-import Hand from './HandView'
+import PlayerHand from './PlayerHandView'
+import OpponentHand from './OpponentHandView'
+import DiscardPile from './DiscardPileView'
+import Deck from './DeckView'
 import { gameDeck } from "../main"
 import { observer } from "mobx-react"
 
@@ -10,9 +13,12 @@ function Board() {
 
   return (
         <div className="board-container">
-          <Hand cards={gameDeck}/>
-          <Hand cards={gameDeck}/>
-          <Hand cards={gameDeck}/>
+          <OpponentHand cards={gameDeck}/>
+          <div>
+            <Deck cards={gameDeck}/>
+            <DiscardPile cards={gameDeck}/>
+          </div>
+          <PlayerHand cards={gameDeck}/>
         </div>
         
   );

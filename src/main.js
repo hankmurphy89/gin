@@ -25,4 +25,17 @@ export const gameDeck = Hand.create({
     cards: getGameDeck()
 })
 
+export const playerHand = Hand.create({
+    cards: []
+})
+
+export const OpponentHand = Hand.create({
+    cards: []
+})
+
+export const DiscardPile = Hand.create({
+    cards: []
+})
+
+
 window.gameDeck = gameDeck
