@@ -4,7 +4,10 @@ import { gameDeck } from "../main"
 import { observer } from "mobx-react"
 
 
-function Board( {cards} ) {
+function Board() {
+  // gameDeck.shuffle()
+  
+
   return (
         <div className="board-container">
           <Hand cards={gameDeck}/>

@@ -28,16 +28,17 @@ export const Hand = types.model({
             let c = self.cards.pop(card);
             destinationHand.cards.add(c)
         },
+        //This doesn't work
         shuffle() {
             let shuffledCards = self.cards;
             for (let i = shuffledCards.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * i);
                 let temp = shuffledCards[i];
+                console.log("temp inside shuffle", temp)
                 shuffledCards[i] = shuffledCards[j];
                 shuffledCards[j] = temp;
             }
+            console.log('still in shuffle', shuffledCards)
             self.cards = shuffledCards;
         }
     }))
-
-

@@ -1,5 +1,5 @@
 import { types } from "mobx-state-tree"
-import { Deck, DiscardPile } from './cardModels'
+import { Hand } from './cardModels'
 
 
 export const Player = types.model({

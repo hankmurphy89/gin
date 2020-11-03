@@ -20,9 +20,9 @@ function getGameDeck() {
     return cardArray
 }
 
-console.log(getGameDeck())
-
 
 export const gameDeck = Hand.create({
     cards: getGameDeck()
 })
+
+window.gameDeck = gameDeck
