@@ -1,24 +1,33 @@
 body {
-    background-color: #3c3f41;
-    color: #efeee6;
-    font-family: "Andale Mono";
+  background-color: #3c3f41;
+  color: #efeee6;
+  font-family: "Andale Mono";
 }
 
 .card {
-    max-width: 150px;
+  width: 180px;
 }
 
 .game-container {
-    display: flex;
-    height: 100%;
+  display: flex;
+  /* height: 100%; */
 }
 
 .board-container {
-    flex: 7;
-    background-color: #61ad75;
-
+  flex: 7.5;
+  background-color: #61ad75;
+  max-height: 100%;
 }
 
 .info-container {
-    flex: 3;
+  flex: 2.5;
+}
+
+img[class^="card"]:not(:first-child) {
+  margin-left: -95px;
+}
+
+.deck-dp-container {
+  display: inline-flex;
+  width: 100%;
 }

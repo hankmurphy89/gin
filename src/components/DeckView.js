@@ -1,11 +1,9 @@
-import React from "react"
-import Card from "./CardView"
-import { observer } from "mobx-react"
+import React from "react";
+import Card from "./CardView";
+import { observer } from "mobx-react";
 
+function Deck({ cards }) {
+  return <ul>{<Card card={cards.cards[0]} />}</ul>;
+}
 
-function Deck( {cards} ) {
-    return <ul>{ <Card card={cards.cards[0]} /> }</ul>
-} 
-
-
-export default observer(Deck)
+export default observer(Deck);
