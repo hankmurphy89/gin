@@ -3,7 +3,7 @@ import Card from "./CardView";
 import { observer } from "mobx-react";
 
 const OpponentHand = ({ cards }) => (
-  <ul>
+  <ul id="opponent-hand">
     {cards.cards.map((card, idx) => (
       <Card key={idx} card={card} />
     ))}

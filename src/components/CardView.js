@@ -35,17 +35,20 @@ export class Card extends Component {
     super();
   }
   rearrangeCard(e, card) {
-    console.log("rearrangeCard was fired");
     // to do: make it so onlyone card can be selected at a time
     if (card.isGrabbed && e.key == "ArrowLeft") {
-      console.log("move me left");
       let currentPlayerHand = getParent(card, 2);
       currentPlayerHand.moveCardLeft(card);
-      console.log(currentPlayerHand);
-    }
-    if (e.key == "ArrowUp" || e.key == "ArrowDown") {
-      console.log("arrow up was triggered");
-      card.toggleGrab();
+      // let ph = document.getElementById("player-hand");
+      // console.log(ph);
+    } else {
+      if (e.key == "ArrowUp") {
+        getParent(card, 2).unGrabAll();
+        card.toggleGrab();
+      }
+      if (card.isGrabbed && e.key == "ArrowDown") {
+        card.toggleGrab();
+      }
     }
   }
 

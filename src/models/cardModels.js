@@ -71,6 +71,10 @@ export const Hand = types
       applySnapshot(self.cards, shuffledCards);
     },
 
+    unGrabAll() {
+      self.cards.map((card) => (card.isGrabbed = false));
+    },
+
     moveCardLeft(card) {
       let c = { ...card };
       let ci = self.cards.indexOf(card);
