@@ -1,6 +1,7 @@
 import React from "react";
-import Card from "./CardView";
 import { observer } from "mobx-react";
+import { game } from "../main";
+import { Card } from "./CardView";
 
 const PlayerHand = ({ cards }) => (
   <ul>

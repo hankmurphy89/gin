@@ -5,6 +5,7 @@ export const Player = types.model({
   name: types.string,
   hand: types.maybe(Hand),
   points: types.integer,
+  isMyTurn: types.boolean,
 });
 
 export const Game = types.model({

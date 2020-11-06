@@ -27,6 +27,7 @@ function getGameDeck() {
         rank: ranks[ri],
         suit: suits[si],
         flipped: false,
+        isGrabbed: false,
       };
       cardArray.push(c);
     }
@@ -47,6 +48,7 @@ export const game = Game.create({
       cards: [],
     }),
     points: 0,
+    isMyTurn: true,
   }),
   player2: Player.create({
     name: "player2",
@@ -54,6 +56,7 @@ export const game = Game.create({
       cards: [],
     }),
     points: 0,
+    isMyTurn: false,
   }),
   discardPile: Hand.create({
     cards: [],
@@ -74,7 +77,6 @@ function flipP1Cards() {
 
 function flipTopCard() {
   let topCard = game.deck.cards[0];
-  console.log(topCard);
   game.deck.sendCard(topCard, game.discardPile);
   game.discardPile.cards[0].flip();
 }

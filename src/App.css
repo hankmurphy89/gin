@@ -8,6 +8,12 @@ body {
   width: 180px;
 }
 
+/* to do: consolidate with card class */
+.card-grabbed {
+  width: 180px;
+  margin-bottom: 15px;
+}
+
 .game-container {
   display: flex;
   /* height: 100%; */

@@ -19,6 +19,7 @@ export const Card = types
     ]),
     suit: types.enumeration("Suit", ["H", "C", "D", "S"]),
     flipped: types.boolean,
+    isGrabbed: types.boolean,
   })
   .views((self) => ({
     get imagePath() {
@@ -28,12 +29,20 @@ export const Card = types
       return ip;
     },
     get name() {
-      return `${self.rank} of ${self.suit}`;
+      return `${self.rank}${self.suit}`;
+    },
+    get className() {
+      let cn = self.isGrabbed ? "card-grabbed" : "card";
+      return cn;
     },
   }))
   .actions((self) => ({
     flip() {
       self.flipped = !self.flipped;
+    },
+    toggleGrab() {
+      self.isGrabbed = !self.isGrabbed;
+      console.log(`the ${self.name} is grabbed? ${self.isGrabbed}`);
     },
   }));
 
@@ -60,5 +69,15 @@ export const Hand = types
         shuffledCards[j] = temp;
       }
       applySnapshot(self.cards, shuffledCards);
+    },
+
+    moveCardLeft(card) {
+      let c = { ...card };
+      let ci = self.cards.indexOf(card);
+      destroy(card);
+      let ca = [...self.cards];
+      ca.slice(ci);
+      ca.splice(ci - 1, 0, c);
+      applySnapshot(self.cards, ca);
     },
   }));
