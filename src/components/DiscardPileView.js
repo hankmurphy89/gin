@@ -3,11 +3,7 @@ import Card from "./CardView";
 import { observer } from "mobx-react";
 
 export const DiscardPile = observer(({ cards }) => (
-  <ul>
-    {cards.cards.map((card, idx) => (
-      <Card key={idx} card={card} />
-    ))}
-  </ul>
+  <ul>{<Card card={cards.cards[cards.cards.length - 1]} />}</ul>
 ));
 
 export default DiscardPile;

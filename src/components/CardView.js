@@ -35,18 +35,28 @@ export class Card extends Component {
     super();
   }
   rearrangeCard(e, card) {
-    // to do: make it so onlyone card can be selected at a time
-    if (card.isGrabbed && e.key == "ArrowLeft") {
-      let currentPlayerHand = getParent(card, 2);
+    let currentPlayerHand = getParent(card, 2);
+    let ci = currentPlayerHand.cards.indexOf(card);
+    let p1cards = document.getElementById("player-hand");
+
+    //if card is grabbed and user keys left arrow, move card left and move focus with it
+    if (card.isGrabbed && e.key == "ArrowLeft" && ci > 0) {
       currentPlayerHand.moveCardLeft(card);
-      // let ph = document.getElementById("player-hand");
-      // console.log(ph);
+      p1cards.childNodes[ci - 1].focus();
+
+      //if card is grabbed and user keys left arrow, move card left and move focus with it
+    } else if (
+      card.isGrabbed &&
+      e.key == "ArrowRight" &&
+      ci < currentPlayerHand.cards.length - 1
+    ) {
+      currentPlayerHand.moveCardRight(card);
+      p1cards.childNodes[ci + 1].focus();
     } else {
       if (e.key == "ArrowUp") {
         getParent(card, 2).unGrabAll();
         card.toggleGrab();
-      }
-      if (card.isGrabbed && e.key == "ArrowDown") {
+      } else if (card.isGrabbed && e.key == "ArrowDown") {
         card.toggleGrab();
       }
     }

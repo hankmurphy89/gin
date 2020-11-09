@@ -84,4 +84,13 @@ export const Hand = types
       ca.splice(ci - 1, 0, c);
       applySnapshot(self.cards, ca);
     },
+    moveCardRight(card) {
+      let c = { ...card };
+      let ci = self.cards.indexOf(card);
+      destroy(card);
+      let ca = [...self.cards];
+      ca.slice(ci);
+      ca.splice(ci + 1, 0, c);
+      applySnapshot(self.cards, ca);
+    },
   }));
