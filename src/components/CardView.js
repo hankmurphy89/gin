@@ -3,33 +3,6 @@ import "../App.css";
 import { observer } from "mobx-react";
 import { getParent } from "mobx-state-tree";
 
-// export class Card extends Component {
-//   constructor() {
-//     super();
-//     this.enableArrangement = this.enableArrangement.bind(this);
-//   }
-
-//   enableArrangement(e) {
-//     return console.log("does this even work?");
-//     // if (e.key == "ArrowUp") {
-//     //   console.log("arrow up works");
-//     //   e.target.style.paddingBottom = 10;
-//     // }
-//   }
-
-//   render() {
-//     const { card } = this.props;
-//     return getParent(card, 3).isMyTurn ? (
-//       <img
-//         src={card.imagePath}
-//         className="card"
-//         id={card.name}
-//         onKeyPressCapture={(e) => this.enableArrangement(e)}
-//       />
-//     ) : null;
-//   }
-// }
-
 export class Card extends Component {
   constructor() {
     super();
@@ -44,7 +17,7 @@ export class Card extends Component {
       currentPlayerHand.moveCardLeft(card);
       p1cards.childNodes[ci - 1].focus();
 
-      //if card is grabbed and user keys left arrow, move card left and move focus with it
+      //if card is grabbed and user keys right arrow, move card right and move focus with it
     } else if (
       card.isGrabbed &&
       e.key == "ArrowRight" &&
@@ -58,6 +31,14 @@ export class Card extends Component {
         card.toggleGrab();
       } else if (card.isGrabbed && e.key == "ArrowDown") {
         card.toggleGrab();
+      } else if (!card.isGrabbed && e.key == "ArrowLeft" && ci > 0) {
+        p1cards.childNodes[ci - 1].focus();
+      } else if (
+        !card.isGrabbed &&
+        e.key == "ArrowRight" &&
+        ci < currentPlayerHand.cards.length - 1
+      ) {
+        p1cards.childNodes[ci + 1].focus();
       }
     }
   }
