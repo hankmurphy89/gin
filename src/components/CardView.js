@@ -1,4 +1,4 @@
-import React, { useState, Component } from "react";
+import React, { Component } from "react";
 import "../App.css";
 import { observer } from "mobx-react";
 import { getParent } from "mobx-state-tree";
@@ -26,6 +26,8 @@ export class Card extends Component {
       currentPlayerHand.moveCardRight(card);
       p1cards.childNodes[ci + 1].focus();
     } else {
+      // the following block is nested because if either of the above conditions are satisfied, the
+      // references to card will no longer be pointing to the card intended for the actions below
       if (e.key == "ArrowUp") {
         getParent(card, 2).unGrabAll();
         card.toggleGrab();
@@ -48,7 +50,7 @@ export class Card extends Component {
     return getParent(card, 3).isMyTurn ? (
       <img
         src={card.imagePath}
-        onKeyDown={(e) => this.rearrangeCard(e, card)}
+        onKeyDown={(e) => this.rearrangeCard(e, card)} //To do: refactor rearrangeCards to be more general e.g. "handleOnKeyDown"
         tabIndex="0"
         className={card.className}
       />

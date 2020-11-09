@@ -1,5 +1,5 @@
 import { Hand } from "./models/cardModels";
-import { Player, Game } from "./models/gameModel";
+import { Player, Game, Message } from "./models/gameModel";
 
 function getGameDeck() {
   let cardArray = [];
@@ -41,6 +41,16 @@ function getGameDeck() {
   return d;
 }
 
+function getMessages() {
+  let ms = {
+    initial_message: {
+      question_text: "Do you want this card?",
+      answer_options: ["Yes", "No"],
+    },
+  };
+  return ms;
+}
+
 export const game = Game.create({
   player1: Player.create({
     name: "player1",
@@ -62,6 +72,7 @@ export const game = Game.create({
     cards: [],
   }),
   deck: getGameDeck(),
+  dialog_messages: getMessages(),
 });
 
 function dealCards() {
