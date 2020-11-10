@@ -29,6 +29,19 @@ body {
   flex: 2.5;
 }
 
+.dialog-box-question {
+  margin-left: 10px;
+}
+
+.dialog-box-answers {
+  margin-left: 20px;
+  text-decoration: underline;
+}
+
+.scoreboard {
+  height: 80%;
+}
+
 img[class^="card"]:not(:first-child) {
   margin-left: -95px;
 }
