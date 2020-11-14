@@ -29,7 +29,39 @@ export const Card = types
       return ip;
     },
     get name() {
-      return `${self.rank}${self.suit}`;
+      let rankName;
+      let suitName;
+      switch (self.rank) {
+        case "1":
+          rankName = "ace";
+          break;
+        case "11":
+          rankName = "jack";
+          break;
+        case "12":
+          rankName = "queen";
+          break;
+        case "13":
+          rankName = "king";
+          break;
+        default:
+          rankName = self.rank;
+      }
+      switch (self.suit) {
+        case "C":
+          suitName = "clubs";
+          break;
+        case "D":
+          suitName = "diamonds";
+          break;
+        case "S":
+          suitName = "spades";
+          break;
+        case "H":
+          suitName = "hearts";
+      }
+
+      return `${rankName} of ${suitName}`;
     },
     get className() {
       let cn = self.isGrabbed ? "card-grabbed" : "card";

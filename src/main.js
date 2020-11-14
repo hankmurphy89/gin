@@ -44,7 +44,8 @@ function getGameDeck() {
 function getMessages() {
   let ms = {
     initial_message: {
-      question_text: "Do you want this card?",
+      question_text: "Do you want the",
+      id: 1,
       answer_options: ["Yes", "No"],
     },
   };
