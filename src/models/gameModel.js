@@ -2,10 +2,10 @@ import { types } from "mobx-state-tree";
 import { Hand } from "./cardModels";
 
 export const Player = types.model({
+  id: types.identifier,
   name: types.string,
   hand: types.maybe(Hand),
   points: types.integer,
-  isMyTurn: types.boolean,
 });
 
 export const Message = types
@@ -14,7 +14,6 @@ export const Message = types
     id: types.identifierNumber,
     answer_options: types.array(types.string),
   })
-  .views((self) => ({}))
   .actions((self) => ({
     setQuestionText(card) {
       let qt;
@@ -29,11 +28,31 @@ export const Message = types
     },
   }));
 
-export const Game = types.model({
-  player1: types.maybe(Player),
-  player2: types.maybe(Player),
-  discardPile: types.maybe(Hand),
-  deck: types.maybe(Hand),
-  dialog_messages: types.map(Message),
-  // turnStage: types.map(Message),
-});
+//This reference model lets me resolve players for whose_turn by name instead of ID
+//I think this makes the code more readable ;)
+export const PlayerByNameReference = types.maybeNull(
+  types.reference(Player, {
+    get(identifier /*name string*/, parent /*game*/) {
+      return parent.players.find((p) => p.name === identifier) || null;
+    },
+    set(value /* Player */) {
+      return value.name;
+    },
+  })
+);
+
+export const Game = types
+  .model({
+    players: types.array(Player),
+    discardPile: types.maybe(Hand),
+    deck: types.maybe(Hand),
+    dialog_messages: types.map(Message),
+    // turnStage: types.map(Message),
+    whose_turn: PlayerByNameReference,
+  })
+  .actions((self) => ({
+    changeTurn() {
+      let newPlayer = self.whose_turn.name == "player1" ? "player2" : "player1";
+      self.whose_turn = newPlayer;
+    },
+  }));

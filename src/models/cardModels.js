@@ -57,7 +57,7 @@ export const Card = types
         case "S":
           suitName = "spades";
           break;
-        case "H":
+        default:
           suitName = "hearts";
       }
 
@@ -74,7 +74,6 @@ export const Card = types
     },
     toggleGrab() {
       self.isGrabbed = !self.isGrabbed;
-      console.log(`the ${self.name} is grabbed? ${self.isGrabbed}`);
     },
   }));
 

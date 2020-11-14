@@ -9,12 +9,12 @@ import { observer } from "mobx-react";
 function Board() {
   return (
     <div className="board-container">
-      <OpponentHand cards={game.player2.hand} />
+      <OpponentHand cards={game.players[1].hand} />
       <div className="deck-dp-container">
         <Deck cards={game.deck} />
         <DiscardPile cards={game.discardPile} />
       </div>
-      <PlayerHand cards={game.player1.hand} />
+      <PlayerHand cards={game.players[0].hand} />
     </div>
   );
 }

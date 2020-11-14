@@ -53,38 +53,43 @@ function getMessages() {
 }
 
 export const game = Game.create({
-  player1: Player.create({
-    name: "player1",
-    hand: Hand.create({
-      cards: [],
-    }),
-    points: 0,
-    isMyTurn: true,
-  }),
-  player2: Player.create({
-    name: "player2",
-    hand: Hand.create({
-      cards: [],
-    }),
-    points: 0,
-    isMyTurn: false,
-  }),
+  players: [
+    {
+      id: "1",
+      name: "player1",
+      hand: Hand.create({
+        cards: [],
+      }),
+      points: 0,
+      // isMyTurn: true,
+    },
+    {
+      id: "2",
+      name: "player2",
+      hand: Hand.create({
+        cards: [],
+      }),
+      points: 0,
+      // isMyTurn: false,
+    },
+  ],
   discardPile: Hand.create({
     cards: [],
   }),
   deck: getGameDeck(),
   dialog_messages: getMessages(),
+  whose_turn: "player1",
 });
 
 function dealCards() {
   for (let i = 0; i < 10; i++) {
-    game.deck.sendCard(game.deck.cards[i], game.player1.hand);
-    game.deck.sendCard(game.deck.cards[i + 1], game.player2.hand);
+    game.deck.sendCard(game.deck.cards[i], game.players[0].hand);
+    game.deck.sendCard(game.deck.cards[i + 1], game.players[1].hand);
   }
 }
 
 function flipP1Cards() {
-  game.player1.hand.cards.map((card) => card.flip());
+  game.players[0].hand.cards.map((card) => card.flip());
 }
 
 function flipTopCard() {
@@ -98,6 +103,8 @@ function startGame() {
   flipP1Cards();
   flipTopCard();
 }
+
+// function takeDpCard() {}
 
 startGame();
 
