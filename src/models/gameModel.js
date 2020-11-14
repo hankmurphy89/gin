@@ -10,8 +10,8 @@ export const Player = types.model({
 
 export const Message = types
   .model({
-    question_text: types.string,
     id: types.identifierNumber,
+    question_text: types.string,
     answer_options: types.array(types.string),
   })
   .actions((self) => ({
@@ -46,8 +46,8 @@ export const Game = types
     players: types.array(Player),
     discardPile: types.maybe(Hand),
     deck: types.maybe(Hand),
-    dialog_messages: types.map(Message),
-    // turnStage: types.map(Message),
+    dialog_messages: types.array(Message),
+    active_message: types.reference(Message),
     whose_turn: PlayerByNameReference,
   })
   .actions((self) => ({

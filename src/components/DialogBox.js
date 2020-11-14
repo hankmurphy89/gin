@@ -11,21 +11,23 @@ export class DialogBox extends Component {
 
   getMessage() {
     let dpCard = game.discardPile.cards[game.discardPile.cards.length - 1];
-    game.dialog_messages.get("initial_message").setQuestionText(dpCard);
-    return game.dialog_messages.get("initial_message").question_text;
+    try {
+      game.active_message.setQuestionText(dpCard);
+    } catch (err) {
+      console.log(err);
+    }
+    return game.active_message.question_text;
   }
 
   render() {
     return (
       <>
         <h2 className="dialog-box-question">{this.getMessage()}</h2>
-        {game.dialog_messages
-          .get("initial_message")
-          .answer_options.map((answer, idx) => (
-            <h3 className="dialog-box-answers" key={idx}>
-              {answer}
-            </h3>
-          ))}
+        {game.active_message.answer_options.map((answer, idx) => (
+          <h3 className="dialog-box-answers" key={idx}>
+            {answer}
+          </h3>
+        ))}
       </>
     );
   }

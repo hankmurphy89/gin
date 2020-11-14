@@ -42,13 +42,13 @@ function getGameDeck() {
 }
 
 function getMessages() {
-  let ms = {
-    initial_message: {
-      question_text: "Do you want the",
+  let ms = [
+    {
       id: 1,
+      question_text: "Do you want the",
       answer_options: ["Yes", "No"],
     },
-  };
+  ];
   return ms;
 }
 
@@ -61,7 +61,6 @@ export const game = Game.create({
         cards: [],
       }),
       points: 0,
-      // isMyTurn: true,
     },
     {
       id: "2",
@@ -70,7 +69,6 @@ export const game = Game.create({
         cards: [],
       }),
       points: 0,
-      // isMyTurn: false,
     },
   ],
   discardPile: Hand.create({
@@ -78,6 +76,7 @@ export const game = Game.create({
   }),
   deck: getGameDeck(),
   dialog_messages: getMessages(),
+  active_message: 1,
   whose_turn: "player1",
 });
 
@@ -104,7 +103,10 @@ function startGame() {
   flipTopCard();
 }
 
-// function takeDpCard() {}
+function takeDpCard() {
+  let c = game.discardPile.cards[0];
+  game.discardPile.sendCard(c, game.whose_turn.hand);
+}
 
 startGame();
 
