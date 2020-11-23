@@ -5,7 +5,7 @@ import { Card } from "./CardView";
 
 const PlayerHand = ({ cards }) => (
   <ul id="player-hand">
-    {cards.cards.map((card, idx) => (
+    {cards.map((card, idx) => (
       <Card key={idx} card={card} />
     ))}
   </ul>

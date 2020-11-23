@@ -48,6 +48,7 @@ export class Card extends Component {
 
   render() {
     const { card } = this.props;
+    // console.log(getParent(game.discardPile.cards[0], 3));
     return getParent(card, 3).name === game.whose_turn.name ? (
       <img
         src={card.imagePath}

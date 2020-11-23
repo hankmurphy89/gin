@@ -87,25 +87,28 @@ function dealCards() {
   }
 }
 
-function flipP1Cards() {
-  game.players[0].hand.cards.map((card) => card.flip());
+export function flipP1Cards() {
+  game.players[0].hand.cards.map((card) => (card.flipped ? card : card.flip()));
 }
 
-function flipTopCard() {
+export function flipTopCard() {
   let topCard = game.deck.cards[0];
   game.deck.sendCard(topCard, game.discardPile);
-  game.discardPile.cards[0].flip();
+  game.discardPile.cards.map((card) => (card.flipped ? card : card.flip()));
+}
+
+export function takeDpCard() {
+  let c = game.discardPile.cards[0];
+  console.log("test", c);
+  game.discardPile.sendCard(c, game.whose_turn.hand);
+  flipP1Cards();
+  // flipTopCard();
 }
 
 function startGame() {
   dealCards();
   flipP1Cards();
   flipTopCard();
-}
-
-function takeDpCard() {
-  let c = game.discardPile.cards[0];
-  game.discardPile.sendCard(c, game.whose_turn.hand);
 }
 
 startGame();

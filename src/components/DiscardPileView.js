@@ -1,9 +1,18 @@
-import React from "react";
+import React, { Component } from "react";
 import Card from "./CardView";
 import { observer } from "mobx-react";
 
-export const DiscardPile = observer(({ cards }) => (
-  <ul>{<Card card={cards.cards[cards.cards.length - 1]} />}</ul>
-));
+export class DiscardPile extends Component {
+  constructor() {
+    super();
+  }
 
-export default DiscardPile;
+  render() {
+    const { cards } = this.props;
+    console.log("green", cards);
+    return cards.length === 0 ? null : (
+      <ul>{<Card card={cards[cards.length - 1]} />}</ul>
+    );
+  }
+}
+export default observer(DiscardPile);

@@ -1,4 +1,4 @@
-import { applySnapshot, destroy, types } from "mobx-state-tree";
+import { applySnapshot, destroy, types, detach } from "mobx-state-tree";
 
 export const Card = types
   .model({
@@ -86,8 +86,7 @@ export const Hand = types
       self.cards.push(card);
     },
     sendCard(card, destinationHand) {
-      let c = { ...card };
-      destroy(card);
+      let c = detach(card);
       destinationHand.add(c);
     },
 

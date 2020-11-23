@@ -4,7 +4,7 @@ import { observer } from "mobx-react";
 
 const OpponentHand = ({ cards }) => (
   <ul id="opponent-hand">
-    {cards.cards.map((card, idx) => (
+    {cards.map((card, idx) => (
       <Card key={idx} card={card} />
     ))}
   </ul>

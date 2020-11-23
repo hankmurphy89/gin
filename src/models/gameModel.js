@@ -52,7 +52,8 @@ export const Game = types
   })
   .actions((self) => ({
     changeTurn() {
-      let newPlayer = self.whose_turn.name == "player1" ? "player2" : "player1";
+      let newPlayer =
+        self.whose_turn.name === "player1" ? "player2" : "player1";
       self.whose_turn = newPlayer;
     },
   }));

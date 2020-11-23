@@ -36,6 +36,10 @@ body {
 .dialog-box-answers {
   margin-left: 20px;
   text-decoration: underline;
+  color: #c5abba;
+}
+.dialog-box-answers:hover {
+  color: #f3dc65;
 }
 
 .scoreboard {
