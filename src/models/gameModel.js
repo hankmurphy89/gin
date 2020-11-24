@@ -21,6 +21,9 @@ export const Message = types
         case 1:
           qt = `Do you want the ${card.name}?`;
           break;
+        case 2:
+          qt = `Pick a card to discard.`;
+          break;
         default:
           qt = "something went wrong..";
       }
@@ -55,5 +58,8 @@ export const Game = types
       let newPlayer =
         self.whose_turn.name === "player1" ? "player2" : "player1";
       self.whose_turn = newPlayer;
+    },
+    changeActiveMessage(id) {
+      self.active_message = id;
     },
   }));

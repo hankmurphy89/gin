@@ -45,7 +45,17 @@ function getMessages() {
   let ms = [
     {
       id: 1,
-      question_text: "Do you want the",
+      question_text: "Do you want the {card}?",
+      answer_options: ["Yes", "No"],
+    },
+    {
+      id: 2,
+      question_text: "Pick a card to discard",
+      answer_options: [],
+    },
+    {
+      id: 3,
+      question_text: "Discard the {card}?",
       answer_options: ["Yes", "No"],
     },
   ];

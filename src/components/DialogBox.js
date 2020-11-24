@@ -41,6 +41,7 @@ export class DialogBox extends Component {
       case 1: // initial message "do you want the {card}?"
         if (answer === "Yes") {
           takeDpCard();
+          game.changeActiveMessage(2);
         } else {
           console.log(
             "placeholder for pass turn, i.e. player doesn't want card"
