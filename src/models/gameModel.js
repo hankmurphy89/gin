@@ -1,13 +1,19 @@
 import { types } from "mobx-state-tree";
 import { Card, Hand } from "./cardModels";
 
-export const Player = types.model({
-  id: types.identifier,
-  name: types.string,
-  hand: types.maybe(Hand),
-  selectedCard: types.maybe(Card),
-  points: types.integer,
-});
+export const Player = types
+  .model({
+    id: types.identifier,
+    name: types.string,
+    hand: types.maybe(Hand),
+    selectedCard: types.maybe(types.reference(Card)),
+    points: types.integer,
+  })
+  .actions((self) => ({
+    setSelectedCard(card) {
+      self.selectedCard = card;
+    },
+  }));
 
 export const Message = types
   .model({
@@ -60,7 +66,6 @@ export const Game = types
       "game_start",
       "p1_initial_choice",
       "discard",
-      "confirm-discard",
     ]),
   })
   .actions((self) => ({

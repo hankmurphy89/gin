@@ -20,6 +20,7 @@ export const Card = types
     suit: types.enumeration("Suit", ["H", "C", "D", "S"]),
     flipped: types.boolean,
     isGrabbed: types.boolean,
+    id: types.identifier,
   })
   .views((self) => ({
     get imagePath() {

@@ -15,10 +15,11 @@ export class Card extends Component {
 
     //if card is grabbed and user keys left arrow, move card left and move focus with it
     if (card.isGrabbed && e.key === "ArrowLeft" && ci > 0) {
-      p1cards.childNodes[ci - 1].focus();
       currentPlayerHand.moveCardLeft(card);
+      p1cards.childNodes[ci - 1].focus();
+      game.whose_turn.setSelectedCard(card);
       if (game.turn_stage == "discard") {
-        game.active_message.setQuestionText(card);
+        game.active_message.setQuestionText(game.whose_turn.selectedCard);
       }
 
       //if card is grabbed and user keys right arrow, move card right and move focus with it
@@ -29,8 +30,9 @@ export class Card extends Component {
     ) {
       p1cards.childNodes[ci + 1].focus();
       currentPlayerHand.moveCardRight(card);
+      game.whose_turn.setSelectedCard(card);
       if (game.turn_stage == "discard") {
-        game.active_message.setQuestionText(card);
+        game.active_message.setQuestionText(game.whose_turn.selectedCard);
       }
     } else {
       // the following block is nested because if either of the above conditions are satisfied, the
@@ -56,11 +58,12 @@ export class Card extends Component {
     if (game.turn_stage == "discard") {
       game.changeActiveMessage(3);
       game.active_message.setQuestionText(card);
+      game.whose_turn.setSelectedCard(card);
     }
   }
   handleBlur() {
     if (game.turn_stage == "discard") {
-      game.changeActiveMessage(2);
+      // game.changeActiveMessage(2);
     }
   }
 

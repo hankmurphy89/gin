@@ -28,6 +28,7 @@ function getGameDeck() {
         suit: suits[si],
         flipped: false,
         isGrabbed: false,
+        id: `${ranks[ri]}${suits[si]}`,
       };
       cardArray.push(c);
     }
@@ -115,7 +116,6 @@ export function flipTopCard() {
 
 export function takeDpCard() {
   let c = game.discardPile.cards[0];
-  console.log("test", c);
   game.discardPile.sendCard(c, game.whose_turn.hand);
   flipP1Cards();
   // flipTopCard();
