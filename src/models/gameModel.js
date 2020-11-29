@@ -1,10 +1,11 @@
 import { types } from "mobx-state-tree";
-import { Hand } from "./cardModels";
+import { Card, Hand } from "./cardModels";
 
 export const Player = types.model({
   id: types.identifier,
   name: types.string,
   hand: types.maybe(Hand),
+  selectedCard: types.maybe(Card),
   points: types.integer,
 });
 
@@ -24,6 +25,9 @@ export const Message = types
         case 2:
           qt = `Pick a card to discard.`;
           break;
+        case 3:
+          qt = `Discard the ${card.name}?`;
+          break;
         default:
           qt = "something went wrong..";
       }
@@ -32,7 +36,7 @@ export const Message = types
   }));
 
 //This reference model lets me resolve players for whose_turn by name instead of ID
-//I think this makes the code more readable ;)
+//benefit is more readable code
 export const PlayerByNameReference = types.maybeNull(
   types.reference(Player, {
     get(identifier /*name string*/, parent /*game*/) {
@@ -52,7 +56,12 @@ export const Game = types
     dialog_messages: types.array(Message),
     active_message: types.reference(Message),
     whose_turn: PlayerByNameReference,
-    turn_stage: types.identifierNumber,
+    turn_stage: types.enumeration("Stage", [
+      "game_start",
+      "p1_initial_choice",
+      "discard",
+      "confirm-discard",
+    ]),
   })
   .actions((self) => ({
     changeTurn() {
@@ -62,5 +71,8 @@ export const Game = types
     },
     changeActiveMessage(id) {
       self.active_message = id;
+    },
+    changeTurnStage(stageName) {
+      self.turn_stage = stageName;
     },
   }));

@@ -44,6 +44,11 @@ function getGameDeck() {
 function getMessages() {
   let ms = [
     {
+      id: 0,
+      question_text: "",
+      answer_options: [],
+    },
+    {
       id: 1,
       question_text: "Do you want the {card}?",
       answer_options: ["Yes", "No"],
@@ -86,9 +91,9 @@ export const game = Game.create({
   }),
   deck: getGameDeck(),
   dialog_messages: getMessages(),
-  active_message: 1,
+  active_message: 0,
   whose_turn: "player1",
-  turn_stage: 1,
+  turn_stage: "game_start",
 });
 
 function dealCards() {
@@ -116,24 +121,44 @@ export function takeDpCard() {
   // flipTopCard();
 }
 
-export function changeTurnStage(stage) {
-  switch (stage) {
-    case 1:
+//get the current player's cards
+//add an onfocus so that when card is focused, display
+//that card's name in the dialog box
+// if answer option "yes" is  selected, move the card in
+// focus to the discard pile
+
+function chooseDiscard() {
+  let currentPlayerCards = document.getElementById("player-hand");
+  let i;
+  for (i = 0; i < currentPlayerCards.length; i++) {
+    currentPlayerCards.childNodes[i].onfocus = () =>
+      console.log("on focus is working");
+  }
+}
+
+export function advanceTurnStage(stage) {
+  game.changeTurnStage(stage);
+  switch (game.turn_stage) {
+    case "game_start":
+      console.log("advanceTurnStage called: game.turnStage = game_start");
       break;
-    case 2:
-      game.changeActiveMessage(2);
+    case "p1_initial_choice": //game start
+      dealCards();
+      flipP1Cards();
+      flipTopCard();
+      game.changeActiveMessage(1); //to: do you want the {flipped card}?
+      break;
+    case "discard":
+      game.changeActiveMessage(2); //pick a card to discard
+      chooseDiscard();
+    // case "confirm-discard":
+    // game.changeActiveMessage(3); //"discard the {inFocus card}?"
     // To do:
     // add onFocus handler to current player cards
     // to update the messaging if they click one to discard
   }
 }
 
-function startGame() {
-  dealCards();
-  flipP1Cards();
-  flipTopCard();
-}
-
-startGame();
+advanceTurnStage("p1_initial_choice"); //start game
 
 window.game = game;

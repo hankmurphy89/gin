@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import { observer } from "mobx-react";
-import { game, takeDpCard, changeTurnStage } from "../main";
+import { game, takeDpCard, advanceTurnStage } from "../main";
 import "../utilities";
-import { getDpCard } from "../utilities";
 
 export class DialogBox extends Component {
   constructor() {
@@ -26,13 +25,13 @@ export class DialogBox extends Component {
     );
   }
   getMessage() {
-    try {
-      let dpCard = game.discardPile.cards[game.discardPile.cards.length - 1];
-      game.active_message.setQuestionText(dpCard);
-      return game.active_message.question_text;
-    } catch (err) {
-      console.log(err);
-      return "no card to be found";
+    switch (game.turn_stage) {
+      case "p1_initial_choice":
+        let dpCard = game.discardPile.cards[game.discardPile.cards.length - 1];
+        game.active_message.setQuestionText(dpCard);
+        return game.active_message.question_text;
+      case "discard":
+        return game.active_message.question_text;
     }
   }
   handleAnswerClick(e) {
@@ -41,7 +40,7 @@ export class DialogBox extends Component {
       case 1: // initial message "do you want the {card}?"
         if (answer === "Yes") {
           takeDpCard();
-          changeTurnStage(2);
+          advanceTurnStage("discard");
         } else {
           console.log(
             "placeholder for pass turn, i.e. player doesn't want card"

@@ -15,8 +15,11 @@ export class Card extends Component {
 
     //if card is grabbed and user keys left arrow, move card left and move focus with it
     if (card.isGrabbed && e.key === "ArrowLeft" && ci > 0) {
-      currentPlayerHand.moveCardLeft(card);
       p1cards.childNodes[ci - 1].focus();
+      currentPlayerHand.moveCardLeft(card);
+      if (game.turn_stage == "discard") {
+        game.active_message.setQuestionText(card);
+      }
 
       //if card is grabbed and user keys right arrow, move card right and move focus with it
     } else if (
@@ -24,8 +27,11 @@ export class Card extends Component {
       e.key === "ArrowRight" &&
       ci < currentPlayerHand.cards.length - 1
     ) {
-      currentPlayerHand.moveCardRight(card);
       p1cards.childNodes[ci + 1].focus();
+      currentPlayerHand.moveCardRight(card);
+      if (game.turn_stage == "discard") {
+        game.active_message.setQuestionText(card);
+      }
     } else {
       // the following block is nested because if either of the above conditions are satisfied, the
       // references to card will no longer be pointing to the card intended for the actions below
@@ -46,6 +52,18 @@ export class Card extends Component {
     }
   }
 
+  handleFocus(card) {
+    if (game.turn_stage == "discard") {
+      game.changeActiveMessage(3);
+      game.active_message.setQuestionText(card);
+    }
+  }
+  handleBlur() {
+    if (game.turn_stage == "discard") {
+      game.changeActiveMessage(2);
+    }
+  }
+
   render() {
     const { card } = this.props;
     // console.log(getParent(game.discardPile.cards[0], 3));
@@ -54,6 +72,8 @@ export class Card extends Component {
         src={card.imagePath}
         onKeyDown={(e) => this.rearrangeCard(e, card)} //To do: refactor rearrangeCards to be more general e.g. "handleOnKeyDown"
         tabIndex="0"
+        onFocus={(e) => this.handleFocus(card)}
+        onBlur={(e) => this.handleBlur()}
         className={card.className}
         alt={card.name}
       />
