@@ -88,6 +88,7 @@ export const game = Game.create({
   dialog_messages: getMessages(),
   active_message: 1,
   whose_turn: "player1",
+  turn_stage: 1,
 });
 
 function dealCards() {
@@ -113,6 +114,18 @@ export function takeDpCard() {
   game.discardPile.sendCard(c, game.whose_turn.hand);
   flipP1Cards();
   // flipTopCard();
+}
+
+export function changeTurnStage(stage) {
+  switch (stage) {
+    case 1:
+      break;
+    case 2:
+      game.changeActiveMessage(2);
+    // To do:
+    // add onFocus handler to current player cards
+    // to update the messaging if they click one to discard
+  }
 }
 
 function startGame() {

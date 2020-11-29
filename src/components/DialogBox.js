@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { observer } from "mobx-react";
-import { game, flipTopCard, flipP1Cards, takeDpCard } from "../main";
+import { game, takeDpCard, changeTurnStage } from "../main";
 import "../utilities";
 import { getDpCard } from "../utilities";
 
@@ -41,7 +41,7 @@ export class DialogBox extends Component {
       case 1: // initial message "do you want the {card}?"
         if (answer === "Yes") {
           takeDpCard();
-          game.changeActiveMessage(2);
+          changeTurnStage(2);
         } else {
           console.log(
             "placeholder for pass turn, i.e. player doesn't want card"

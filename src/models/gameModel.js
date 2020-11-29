@@ -52,6 +52,7 @@ export const Game = types
     dialog_messages: types.array(Message),
     active_message: types.reference(Message),
     whose_turn: PlayerByNameReference,
+    turn_stage: types.identifierNumber,
   })
   .actions((self) => ({
     changeTurn() {
