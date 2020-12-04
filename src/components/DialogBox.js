@@ -32,6 +32,9 @@ export class DialogBox extends Component {
         return game.active_message.question_text;
       case "discard":
         return game.active_message.question_text;
+      case "p2_initial_choice":
+        return game.active_message.question_text;
+
       default:
         console.log("stage after discard");
     }
@@ -44,16 +47,12 @@ export class DialogBox extends Component {
           takeDpCard();
           advanceTurnStage("discard");
         } else {
-          console.log(
-            "placeholder for pass turn, i.e. player doesn't want card"
-          );
+          advanceTurnStage("p2_initial_choice");
         }
         break;
       case 3: // discard "discard the {card}?"
         if (answer === "Yes") {
-          console.log("hello");
           let sc = game.whose_turn.selectedCard;
-          console.log(sc);
           game.whose_turn.hand.sendCard(sc, game.discardPile);
           // advanceTurnStage("discard");
         } else {

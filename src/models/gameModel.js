@@ -66,6 +66,7 @@ export const Game = types
       "game_start",
       "p1_initial_choice",
       "discard",
+      "p2_initial_choice",
     ]),
   })
   .actions((self) => ({

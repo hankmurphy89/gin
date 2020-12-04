@@ -64,6 +64,11 @@ function getMessages() {
       question_text: "Discard the {card}?",
       answer_options: ["Yes", "No"],
     },
+    {
+      id: 4,
+      question_text: "Player 2's turn",
+      answer_options: [],
+    },
   ];
   return ms;
 }
@@ -127,15 +132,6 @@ export function takeDpCard() {
 // if answer option "yes" is  selected, move the card in
 // focus to the discard pile
 
-function chooseDiscard() {
-  let currentPlayerCards = document.getElementById("player-hand");
-  let i;
-  for (i = 0; i < currentPlayerCards.length; i++) {
-    currentPlayerCards.childNodes[i].onfocus = () =>
-      console.log("on focus is working");
-  }
-}
-
 export function advanceTurnStage(stage) {
   game.changeTurnStage(stage);
   switch (game.turn_stage) {
@@ -150,12 +146,9 @@ export function advanceTurnStage(stage) {
       break;
     case "discard":
       game.changeActiveMessage(2); //pick a card to discard
-      chooseDiscard();
-    // case "confirm-discard":
-    // game.changeActiveMessage(3); //"discard the {inFocus card}?"
-    // To do:
-    // add onFocus handler to current player cards
-    // to update the messaging if they click one to discard
+    case "p2_initial_choice":
+      game.changeActiveMessage(4); //pick a card to discard
+      game.changeTurn();
   }
 }
 
