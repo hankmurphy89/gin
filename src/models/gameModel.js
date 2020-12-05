@@ -22,7 +22,7 @@ export const Message = types
     answer_options: types.array(types.string),
   })
   .actions((self) => ({
-    setQuestionText(card) {
+    setPromptText(card) {
       //
       let qt;
       switch (self.id) {

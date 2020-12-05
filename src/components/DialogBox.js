@@ -28,7 +28,7 @@ export class DialogBox extends Component {
     switch (game.turn_stage) {
       case "p1_initial_choice":
         let dpCard = game.discardPile.cards[game.discardPile.cards.length - 1];
-        game.active_message.setQuestionText(dpCard);
+        game.active_message.setPromptText(dpCard);
         return game.active_message.prompt_text;
       case "discard":
         return game.active_message.prompt_text;

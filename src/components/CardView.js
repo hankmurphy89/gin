@@ -19,7 +19,7 @@ export class Card extends Component {
       p1cards.childNodes[ci - 1].focus();
       game.whose_turn.setSelectedCard(card);
       if (game.turn_stage == "discard") {
-        game.active_message.setQuestionText(game.whose_turn.selectedCard);
+        game.active_message.setPromptText(game.whose_turn.selectedCard);
       }
 
       //if card is grabbed and user keys right arrow, move card right and move focus with it
@@ -32,7 +32,7 @@ export class Card extends Component {
       currentPlayerHand.moveCardRight(card);
       game.whose_turn.setSelectedCard(card);
       if (game.turn_stage == "discard") {
-        game.active_message.setQuestionText(game.whose_turn.selectedCard);
+        game.active_message.setPromptText(game.whose_turn.selectedCard);
       }
     } else {
       // the following block is nested because if either of the above conditions are satisfied, the
@@ -57,7 +57,7 @@ export class Card extends Component {
   handleFocus(card) {
     if (game.turn_stage == "discard") {
       game.changeActiveMessage(3);
-      game.active_message.setQuestionText(card);
+      game.active_message.setPromptText(card);
       game.whose_turn.setSelectedCard(card);
     }
   }
