@@ -54,14 +54,17 @@ export class Card extends Component {
     }
   }
 
-  handleFocus(card) {
+  handleFocus(e, card) {
+    e.target.className = `${card.className} in-focus`
+
     if (game.turn_stage == "discard") {
       game.changeActiveMessage(3);
       game.active_message.setPromptText(card);
       game.whose_turn.setSelectedCard(card);
     }
   }
-  handleBlur() {
+  handleBlur(e, card) {
+    e.target.className = card.className 
     if (game.turn_stage == "discard") {
       // game.changeActiveMessage(2);
     }
@@ -75,8 +78,9 @@ export class Card extends Component {
         src={card.imagePath}
         onKeyDown={(e) => this.rearrangeCard(e, card)} //To do: refactor rearrangeCards to be more general e.g. "handleOnKeyDown"
         tabIndex="0"
-        onFocus={(e) => this.handleFocus(card)}
-        onBlur={(e) => this.handleBlur()}
+        onClick={(e)=> e.target.focus()}
+        onFocus={(e) => this.handleFocus(e, card)}
+        onBlur={(e) => this.handleBlur(e, card)}
         className={card.className}
         alt={card.name}
       />
