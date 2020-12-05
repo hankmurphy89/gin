@@ -46,27 +46,27 @@ function getMessages() {
   let ms = [
     {
       id: 0,
-      question_text: "",
+      prompt_text: "",
       answer_options: [],
     },
     {
       id: 1,
-      question_text: "Do you want the {card}?",
+      prompt_text: "Do you want the {card}?",
       answer_options: ["Yes", "No"],
     },
     {
       id: 2,
-      question_text: "Pick a card to discard",
+      prompt_text: "Pick a card to discard",
       answer_options: [],
     },
     {
       id: 3,
-      question_text: "Discard the {card}?",
+      prompt_text: "Discard the {card}?",
       answer_options: ["Yes", "No"],
     },
     {
       id: 4,
-      question_text: "Player 2's turn",
+      prompt_text: "Player 2's turn",
       answer_options: [],
     },
   ];
@@ -146,9 +146,11 @@ export function advanceTurnStage(stage) {
       break;
     case "discard":
       game.changeActiveMessage(2); //pick a card to discard
+      break;
     case "p2_initial_choice":
       game.changeActiveMessage(4); //pick a card to discard
       game.changeTurn();
+      break;
   }
 }
 

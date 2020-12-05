@@ -29,11 +29,11 @@ export class DialogBox extends Component {
       case "p1_initial_choice":
         let dpCard = game.discardPile.cards[game.discardPile.cards.length - 1];
         game.active_message.setQuestionText(dpCard);
-        return game.active_message.question_text;
+        return game.active_message.prompt_text;
       case "discard":
-        return game.active_message.question_text;
+        return game.active_message.prompt_text;
       case "p2_initial_choice":
-        return game.active_message.question_text;
+        return game.active_message.prompt_text;
 
       default:
         console.log("stage after discard");
@@ -54,7 +54,7 @@ export class DialogBox extends Component {
         if (answer === "Yes") {
           let sc = game.whose_turn.selectedCard;
           game.whose_turn.hand.sendCard(sc, game.discardPile);
-          // advanceTurnStage("discard");
+          advanceTurnStage("p2_initial_choice");
         } else {
           game.changeActiveMessage(2);
         }

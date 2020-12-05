@@ -18,11 +18,12 @@ export const Player = types
 export const Message = types
   .model({
     id: types.identifierNumber,
-    question_text: types.string,
+    prompt_text: types.string,
     answer_options: types.array(types.string),
   })
   .actions((self) => ({
     setQuestionText(card) {
+      //
       let qt;
       switch (self.id) {
         case 1:
@@ -37,7 +38,7 @@ export const Message = types
         default:
           qt = "something went wrong..";
       }
-      self.question_text = qt;
+      self.prompt_text = qt;
     },
   }));
 

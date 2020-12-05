@@ -9,7 +9,6 @@ export class DiscardPile extends Component {
 
   render() {
     const { cards } = this.props;
-    console.log("green", cards);
     return cards.length === 0 ? null : (
       <ul>{<Card card={cards[cards.length - 1]} />}</ul>
     );
