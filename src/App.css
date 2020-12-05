@@ -27,6 +27,7 @@ body {
   flex: 7.5;
   background-color: #61ad75;
   max-height: 100%;
+  min-width: 1024px;
 }
 
 .info-container {
@@ -51,7 +52,7 @@ body {
 }
 
 img[class^="card"]:not(:first-child) {
-  margin-left: -95px;
+  margin-left: -100px;
 }
 
 .deck-dp-container {
