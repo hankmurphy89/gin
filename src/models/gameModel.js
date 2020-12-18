@@ -15,32 +15,6 @@ export const Player = types
     },
   }));
 
-export const Message = types
-  .model({
-    id: types.identifierNumber,
-    prompt_text: types.string,
-    answer_options: types.array(types.string),
-  })
-  .actions((self) => ({
-    setPromptText(card) {
-      //
-      let qt;
-      switch (self.id) {
-        case 1:
-          qt = `Do you want the ${card.name}?`;
-          break;
-        case 2:
-          qt = `Pick a card to discard.`;
-          break;
-        case 3:
-          qt = `Discard the ${card.name}?`;
-          break;
-        default:
-          qt = "something went wrong..";
-      }
-      self.prompt_text = qt;
-    },
-  }));
 
 //This reference model lets me resolve players for whose_turn by name instead of ID
 //benefit is more readable code
@@ -60,14 +34,14 @@ export const Game = types
     players: types.array(Player),
     discardPile: types.maybe(Hand),
     deck: types.maybe(Hand),
-    dialog_messages: types.array(Message),
-    active_message: types.reference(Message),
     whose_turn: PlayerByNameReference,
     turn_stage: types.enumeration("Stage", [
-      "game_start",
+      "game_lobby",
       "p1_initial_choice",
       "discard",
-      "p2_initial_choice",
+      "opponent_initial_choice",
+      "opponent_turn",
+      "p1_turn",
     ]),
   })
   .actions((self) => ({
@@ -76,10 +50,36 @@ export const Game = types
         self.whose_turn.name === "player1" ? "player2" : "player1";
       self.whose_turn = newPlayer;
     },
-    changeActiveMessage(id) {
-      self.active_message = id;
-    },
     changeTurnStage(stageName) {
       self.turn_stage = stageName;
+    },
+  }))
+  .views((self) => ({
+    get dialogBoxContent() {
+      switch (self.turn_stage) {
+        case "p1_initial_choice":
+          return [
+            `Do you want the ${self.discardPile.cards[0].name}`,
+            ["Yes", "No"],
+          ];
+        case "discard":
+          return self.whose_turn.selectedCard
+            ? [
+                `Discard the ${self.whose_turn.selectedCard.name}?`,
+                ["Yes", "No"],
+              ]
+            : ["Choose card to discard", []];
+        case "opponent_initial_choice":
+          return ["Opponent turn", []];
+        case "opponent_turn":
+          return ["Opponent turn", []];
+        case "p1_turn":
+          return [
+            "What would you like to do",
+            ["Draw from deck", "Take from discard pile"],
+          ];
+        default:
+          return ["something went wrong", []];
+      }
     },
   }));

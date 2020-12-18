@@ -11,7 +11,7 @@ function App() {
         <Board className="board-container" />
         <div className="info-container">
           <div className="scoreboard" />
-          <DialogBox className="dialog-box" messages={game.dialog_messages} />
+          <DialogBox className="dialog-box" />
         </div>
       </div>
     </div>

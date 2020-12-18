@@ -1,5 +1,8 @@
 import { Hand } from "./models/cardModels";
-import { Player, Game, Message } from "./models/gameModel";
+import { Player, Game } from "./models/gameModel";
+import { Bot } from "./bot";
+
+const bot = new Bot("easy");
 
 function getGameDeck() {
   let cardArray = [];
@@ -35,6 +38,7 @@ function getGameDeck() {
   }
   const d = Hand.create({
     cards: cardArray,
+    name: "deck",
   });
 
   d.shuffle();
@@ -42,36 +46,6 @@ function getGameDeck() {
   return d;
 }
 
-function getMessages() {
-  let ms = [
-    {
-      id: 0,
-      prompt_text: "",
-      answer_options: [],
-    },
-    {
-      id: 1,
-      prompt_text: "Do you want the {card}?",
-      answer_options: ["Yes", "No"],
-    },
-    {
-      id: 2,
-      prompt_text: "Pick a card to discard",
-      answer_options: [],
-    },
-    {
-      id: 3,
-      prompt_text: "Discard the {card}?",
-      answer_options: ["Yes", "No"],
-    },
-    {
-      id: 4,
-      prompt_text: "Player 2's turn",
-      answer_options: [],
-    },
-  ];
-  return ms;
-}
 
 export const game = Game.create({
   players: [
@@ -80,6 +54,7 @@ export const game = Game.create({
       name: "player1",
       hand: Hand.create({
         cards: [],
+        name: "p1_hand",
       }),
       points: 0,
     },
@@ -88,18 +63,18 @@ export const game = Game.create({
       name: "player2",
       hand: Hand.create({
         cards: [],
+        name: "opponent_hand",
       }),
       points: 0,
     },
   ],
   discardPile: Hand.create({
     cards: [],
+    name: "discard_pile",
   }),
   deck: getGameDeck(),
-  dialog_messages: getMessages(),
-  active_message: 0,
   whose_turn: "player1",
-  turn_stage: "game_start",
+  turn_stage: "game_lobby",
 });
 
 function dealCards() {
@@ -109,21 +84,31 @@ function dealCards() {
   }
 }
 
-export function flipP1Cards() {
-  game.players[0].hand.cards.map((card) => (card.flipped ? card : card.flip()));
-}
+// export function flipP1Cards() {
+//   game.players[0].hand.cards.map((card) => (card.flipped ? card : card.flip()));
+// }
 
 export function flipTopCard() {
   let topCard = game.deck.cards[0];
   game.deck.sendCard(topCard, game.discardPile);
-  game.discardPile.cards.map((card) => (card.flipped ? card : card.flip()));
+  // game.discardPile.cards.map((card) => (card.flipped ? card : card.flip()));
 }
 
 export function takeDpCard() {
-  let c = game.discardPile.cards[0];
+  let c = game.discardPile.cards[game.discardPile.cards.length-1];
   game.discardPile.sendCard(c, game.whose_turn.hand);
-  flipP1Cards();
-  // flipTopCard();
+  game.whose_turn.setSelectedCard(undefined)
+}
+
+export function drawFromDeck() {
+  let c = game.deck.cards[0];
+  game.deck.sendCard(c, game.whose_turn.hand);
+  game.whose_turn.setSelectedCard(undefined)
+}
+
+export function discard(card) {
+  game.whose_turn.hand.sendCard(card, game.discardPile);
+  game.whose_turn.setSelectedCard(undefined)
 }
 
 //get the current player's cards
@@ -135,20 +120,23 @@ export function takeDpCard() {
 export function advanceTurnStage(stage) {
   game.changeTurnStage(stage);
   switch (game.turn_stage) {
-    case "game_start":
-      console.log("advanceTurnStage called: game.turnStage = game_start");
+    case "game_lobby":
       break;
     case "p1_initial_choice": //game start
       dealCards();
-      flipP1Cards();
       flipTopCard();
-      game.changeActiveMessage(1); //to: do you want the {flipped card}?
       break;
     case "discard":
-      game.changeActiveMessage(2); //pick a card to discard
       break;
-    case "p2_initial_choice":
-      game.changeActiveMessage(4); //pick a card to discard
+    case "opponent_initial_choice":
+      game.changeTurn();
+      setTimeout(bot.decision(), 4000);
+      break;
+    case "opponent_turn":
+      game.changeTurn();
+      window.setTimeout(bot.decision(), 4000);
+      break;
+    case "p1_turn":
       game.changeTurn();
       break;
   }

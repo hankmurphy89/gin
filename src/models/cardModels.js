@@ -73,6 +73,12 @@ export const Card = types
     flip() {
       self.flipped = !self.flipped;
     },
+    flipFaceUp() {
+      self.flipped = true;
+    },
+    flipFaceDown() {
+      self.flipped = false;
+    },
     toggleGrab() {
       self.isGrabbed = !self.isGrabbed;
     },
@@ -81,14 +87,21 @@ export const Card = types
 export const Hand = types
   .model({
     cards: types.optional(types.array(Card), []),
+    name: types.string,
   })
   .actions((self) => ({
     add(card) {
       self.cards.push(card);
     },
     sendCard(card, destinationHand) {
+      console.log("sending the", card.name, "to", destinationHand.name)
       let c = detach(card);
-      destinationHand.add(c);
+      if ((destinationHand.name == "p1_hand")|| (destinationHand.name == "discard_pile")){
+        c.flipFaceUp()
+      } else {
+        c.flipFaceDown()
+      }
+      destinationHand.add(c)
     },
 
     shuffle() {

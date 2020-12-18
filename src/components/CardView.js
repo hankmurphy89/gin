@@ -18,9 +18,6 @@ export class Card extends Component {
       currentPlayerHand.moveCardLeft(card);
       p1cards.childNodes[ci - 1].focus();
       game.whose_turn.setSelectedCard(card);
-      if (game.turn_stage == "discard") {
-        game.active_message.setPromptText(game.whose_turn.selectedCard);
-      }
 
       //if card is grabbed and user keys right arrow, move card right and move focus with it
     } else if (
@@ -31,9 +28,6 @@ export class Card extends Component {
       p1cards.childNodes[ci + 1].focus();
       currentPlayerHand.moveCardRight(card);
       game.whose_turn.setSelectedCard(card);
-      if (game.turn_stage == "discard") {
-        game.active_message.setPromptText(game.whose_turn.selectedCard);
-      }
     } else {
       // the following block is nested because if either of the above conditions are satisfied, the
       // references to card will no longer be pointing to the card intended for the actions below
@@ -55,19 +49,15 @@ export class Card extends Component {
   }
 
   handleFocus(e, card) {
-    e.target.className = `${card.className} in-focus`
+    e.target.className = `${card.className} in-focus`;
 
     if (game.turn_stage == "discard") {
-      game.changeActiveMessage(3);
-      game.active_message.setPromptText(card);
       game.whose_turn.setSelectedCard(card);
+      game.changeTurnStage("discard"); //this will reset the message to "discard {card}?"
     }
   }
   handleBlur(e, card) {
-    e.target.className = card.className 
-    if (game.turn_stage == "discard") {
-      // game.changeActiveMessage(2);
-    }
+    e.target.className = card.className;
   }
 
   render() {
@@ -78,7 +68,7 @@ export class Card extends Component {
         src={card.imagePath}
         onKeyDown={(e) => this.rearrangeCard(e, card)} //To do: refactor rearrangeCards to be more general e.g. "handleOnKeyDown"
         tabIndex="0"
-        onClick={(e)=> e.target.focus()}
+        onClick={(e) => e.target.focus()}
         onFocus={(e) => this.handleFocus(e, card)}
         onBlur={(e) => this.handleBlur(e, card)}
         className={card.className}

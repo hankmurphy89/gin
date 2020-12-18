@@ -1,18 +1,19 @@
 import React, { Component } from "react";
 import { observer } from "mobx-react";
-import { game, takeDpCard, advanceTurnStage } from "../main";
+import { game, takeDpCard, advanceTurnStage, discard, drawFromDeck } from "../main";
 import "../utilities";
 
 export class DialogBox extends Component {
   constructor() {
     super();
+    this.handleAnswerClick = this.handleAnswerClick.bind(this);
   }
 
   render() {
     return (
       <>
-        <h2 className="dialog-box-question">{this.getMessage()}</h2>
-        {game.active_message.answer_options.map((answer, idx) => (
+        <h2 className="dialog-box-question">{game.dialogBoxContent[0]}</h2>
+        {game.dialogBoxContent[1].map((answer, idx) => (
           <h3
             className="dialog-box-answers"
             key={idx}
@@ -24,43 +25,32 @@ export class DialogBox extends Component {
       </>
     );
   }
-  getMessage() {
-    switch (game.turn_stage) {
-      case "p1_initial_choice":
-        let dpCard = game.discardPile.cards[game.discardPile.cards.length - 1];
-        game.active_message.setPromptText(dpCard);
-        return game.active_message.prompt_text;
-      case "discard":
-        return game.active_message.prompt_text;
-      case "p2_initial_choice":
-        return game.active_message.prompt_text;
 
-      default:
-        console.log("stage after discard");
-    }
-  }
   handleAnswerClick(e) {
     let answer = e.target.innerText;
-    switch (game.active_message.id) {
-      case 1: // initial message "do you want the {card}?"
+    switch (game.turn_stage) {
+      case "p1_initial_choice": // initial message "do you want the {card}?"
         if (answer === "Yes") {
           takeDpCard();
-          advanceTurnStage("discard");
+          return advanceTurnStage("discard");
         } else {
-          advanceTurnStage("p2_initial_choice");
+          return advanceTurnStage("opponent_initial_choice");
         }
-        break;
-      case 3: // discard "discard the {card}?"
+      case "discard": // discard "discard the {card}?"
         if (answer === "Yes") {
           let sc = game.whose_turn.selectedCard;
-          game.whose_turn.hand.sendCard(sc, game.discardPile);
-          advanceTurnStage("p2_initial_choice");
-        } else {
-          game.changeActiveMessage(2);
+          discard(sc);
+          return advanceTurnStage("opponent_turn");
         }
         break;
+      case "p1_turn": // discard "discard the {card}?"
+        if (answer === "Draw from deck") {
+          drawFromDeck()
+        } else {
+          takeDpCard()
+        }
+        return advanceTurnStage("discard");
       default:
-        console.log("placeholder for message with id 2");
     }
   }
 }
