@@ -130,11 +130,21 @@ export function advanceTurnStage(stage) {
       break;
     case "opponent_initial_choice":
       game.changeTurn();
-      setTimeout(bot.decision(), 4000);
+      setTimeout(()=>{bot.decision()}, 2000);
       break;
     case "opponent_turn":
       game.changeTurn();
-      window.setTimeout(bot.decision(), 4000);
+      setTimeout(()=>{bot.decision()}, 2000);
+      break;
+    case "opponent_passes":
+      break;
+    case "opponent_takes_dp":
+      takeDpCard();
+      setTimeout(()=>{bot.discard()}, 2000);
+      break;
+    case "opponent_draws_from_deck":
+      drawFromDeck();
+      setTimeout(()=>{bot.discard()}, 2000);
       break;
     case "p1_turn":
       game.changeTurn();

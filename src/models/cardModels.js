@@ -1,4 +1,6 @@
 import { applySnapshot, destroy, types, detach } from "mobx-state-tree";
+import { utils } from "../utilities";
+
 
 export const Card = types
   .model({
@@ -68,6 +70,10 @@ export const Card = types
       let cn = self.isGrabbed ? "card-grabbed" : "card";
       return cn;
     },
+    get points() {
+      let p = parseInt(self.rank) >= 10 ? 10 : parseInt(self.rank);
+      return p;
+    },
   }))
   .actions((self) => ({
     flip() {
@@ -94,14 +100,18 @@ export const Hand = types
       self.cards.push(card);
     },
     sendCard(card, destinationHand) {
-      console.log("sending the", card.name, "to", destinationHand.name)
+      console.log("sending the", card.name, "to", destinationHand.name);
       let c = detach(card);
-      if ((destinationHand.name == "p1_hand")|| (destinationHand.name == "discard_pile")){
-        c.flipFaceUp()
+      if (
+        destinationHand.name == "p1_hand" ||
+        destinationHand.name == "discard_pile" ||
+        destinationHand.name == "opponent_hand"
+      ) {
+        c.flipFaceUp();
       } else {
-        c.flipFaceDown()
+        c.flipFaceDown();
       }
-      destinationHand.add(c)
+      destinationHand.add(c);
     },
 
     shuffle() {
@@ -137,4 +147,54 @@ export const Hand = types
       ca.splice(ci + 1, 0, c);
       applySnapshot(self.cards, ca);
     },
+
+    organize() {
+      let cs = [...self.cards];
+      // sort by suit then rank
+      cs.sort((a, b) =>
+        a.suit > b.suit
+          ? 1
+          : a.suit === b.suit
+          ? parseInt(a.rank) > parseInt(b.rank)
+            ? 1
+            : -1
+          : -1
+      );
+
+      applySnapshot(self.cards, cs);
+    },
+    // organize(){
+    //   let disorganizedCards = [...self.cards]
+    //   let tricks = []
+    //   let almostTricks = []
+    //   let loneWolves = []
+    //   for (let c of disorganizedCards){
+    //     let othersInRun = utils.makesRun(c, disorganizedCards)
+    //     console.log("others in run:", othersInRun)
+    //     console.log("c:", c)
+    //     let othersMatchingRank = utils.matchesRank(c, disorganizedCards)
+    //     console.log("others matching rank:", othersMatchingRank)
+    //     if (othersInRun.length >= 2){
+    //       tricks.push({...c})
+    //       tricks.concat(othersInRun)
+    //     } else if(othersInRun.length == 1){
+    //       almostTricks.push({...c})
+    //       almostTricks.concat(othersInRun)
+    //     } else if(othersMatchingRank.length >= 2){
+    //       tricks.push({...c})
+    //       tricks.concat(othersMatchingRank)
+    //     } else if(othersMatchingRank.length == 1){
+    //       almostTricks.push({...c})
+    //       almostTricks.concat(othersMatchingRank)
+    //     } else {
+    //       loneWolves.push({...c})
+    //     }
+    //     }
+    //   console.log("tricks:", tricks)
+    //   console.log("Almosttricks:", almostTricks)
+    //   console.log("loneWolves:", loneWolves)
+    //   let organizedCards = tricks.concat(almostTricks, loneWolves)
+    //   console.log(organizedCards)
+    //   applySnapshot(self.cards, organizedCards)
+    // }
   }));

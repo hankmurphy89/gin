@@ -15,7 +15,6 @@ export const Player = types
     },
   }));
 
-
 //This reference model lets me resolve players for whose_turn by name instead of ID
 //benefit is more readable code
 export const PlayerByNameReference = types.maybeNull(
@@ -41,6 +40,9 @@ export const Game = types
       "discard",
       "opponent_initial_choice",
       "opponent_turn",
+      "opponent_takes_dp",
+      "opponent_draws_from_deck",
+      "opponent_passes",
       "p1_turn",
     ]),
   })
@@ -73,6 +75,12 @@ export const Game = types
           return ["Opponent turn", []];
         case "opponent_turn":
           return ["Opponent turn", []];
+        case "opponent_takes_dp":
+          return ["Opponent takes from discard pile", []];
+        case "opponent_draws_from_deck":
+          return ["Opponent draws from the deck", []];
+        case "opponent_passes":
+          return ["Opponent passes", []];
         case "p1_turn":
           return [
             "What would you like to do",
