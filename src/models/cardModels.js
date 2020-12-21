@@ -1,7 +1,6 @@
 import { applySnapshot, destroy, types, detach } from "mobx-state-tree";
 import { utils } from "../utilities";
 
-
 export const Card = types
   .model({
     rank: types.enumeration("Rank", [
@@ -160,9 +159,49 @@ export const Hand = types
             : -1
           : -1
       );
-
       applySnapshot(self.cards, cs);
     },
+    superOrganize() {
+      self.organize();
+      let newCards = [];
+      let tricks = [];
+      let almostTricks = [];
+      let nothin = [];
+      let run = [];
+      for (let i = 0; i < self.cards.length; i++) {
+        run.push({ ...self.cards[i] });
+        let j = i + 1;
+        while (
+          j < self.cards.length &&
+          self.cards[i].suit == self.cards[j].suit &&
+          parseInt(self.cards[i].rank) == parseInt(self.cards[j].rank) - 1
+        ) {
+          run.push({ ...self.cards[j] });
+          i += 1;
+          j += 1;
+        }
+        switch (run.length) {
+          case 1:
+            nothin.push(...run);
+            // nothin.length == 0 ? nothin.push(run[0]) : nothin.concat(run);
+            break;
+          case 2:
+            almostTricks.push(...run);
+            // almostTricks.length == 0
+            //   ? almostTricks.push(run)
+            //   : almostTricks.concat(run);
+            break;
+          default:
+            tricks.push(...run);
+            // tricks.length == 0 ? tricks.push(run) : tricks.concat(run);
+            break;
+        }
+        run = [];
+      }
+      newCards.push(...tricks, ...almostTricks, ...nothin);
+      applySnapshot(self.cards, newCards);
+    },
+
     // organize(){
     //   let disorganizedCards = [...self.cards]
     //   let tricks = []
