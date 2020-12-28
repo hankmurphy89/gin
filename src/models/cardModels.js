@@ -69,10 +69,6 @@ export const Card = types
       let cn = self.isGrabbed ? "card-grabbed" : "card";
       return cn;
     },
-    get points() {
-      let p = parseInt(self.rank) >= 10 ? 10 : parseInt(self.rank);
-      return p;
-    },
   }))
   .actions((self) => ({
     flip() {
@@ -94,6 +90,23 @@ export const Hand = types
     cards: types.optional(types.array(Card), []),
     name: types.string,
   })
+  .views((self) => ({
+    score() {
+      let points = 0;
+      let organizedCards = utils.organizeByTrick(self.cards);
+      console.log("organizedCards:", organizedCards);
+      let nonTricks = organizedCards.filter((a) => a.length <= 2);
+      for (let a of nonTricks) {
+        console.log("array in nonTricks:", a);
+        for (let c of a) {
+          let p = c.rank >= 10 ? 10 : parseInt(c.rank);
+          points += p;
+        }
+      }
+      console.log("nonTricks:", nonTricks);
+      return points;
+    },
+  }))
   .actions((self) => ({
     add(card) {
       self.cards.push(card);
@@ -161,39 +174,40 @@ export const Hand = types
 
     organizeByRank() {
       let sameRanksArray = utils.getRankMatches(self.cards, true);
-      console.log(sameRanksArray);
-      console.log(
-        "should be arrray of arrays containing rank matches",
-        utils.getRankMatches(self.cards)
-      );
       applySnapshot(self.cards, sameRanksArray);
     },
 
     organizeByTrick() {
-      function hasntBeenUsed(card, usedArray){
-        for(let i=0; i<usedArray.length;i++){
-          if (usedArray[i].id == card.id) {
-            return false 
-          }
-        }
-        return true
-      }
+      // function hasntBeenUsed(card, usedArray) {
+      //   for (let i = 0; i < usedArray.length; i++) {
+      //     if (usedArray[i].id == card.id) {
+      //       return false;
+      //     }
+      //   }
+      //   return true;
+      // }
 
-      let organizedByTricks = []
-      let remainingCards = self.cards
-      while (remainingCards.length>0){
-        let sameRanksArray = utils.getRankMatches(remainingCards)
-        let runsArray = utils.getRuns(remainingCards)
-        let orderedCards;
-        if (runsArray[0].length >= sameRanksArray[0].length){
-          orderedCards = runsArray[0]
-        } else {orderedCards = sameRanksArray[0]}
-        organizedByTricks.push(...orderedCards)
-        console.log("should be highest trick", orderedCards)
-        remainingCards = remainingCards.filter((c)=>hasntBeenUsed(c, organizedByTricks))
-      }
-      applySnapshot(self.cards, organizedByTricks)
+      // let organizedByTricks = [];
+      // let remainingCards = self.cards;
+      // while (remainingCards.length > 0) {
+      //   let sameRanksArray = utils.getRankMatches(remainingCards);
+      //   let runsArray = utils.getRuns(remainingCards);
+      //   let orderedCards;
+      //   if (runsArray[0].length >= sameRanksArray[0].length) {
+      //     orderedCards = runsArray[0];
+      //   } else {
+      //     orderedCards = sameRanksArray[0];
+      //   }
+      //   organizedByTricks.push(...orderedCards);
+      //   console.log("should be highest trick", orderedCards);
+      //   remainingCards = remainingCards.filter((c) =>
+      //     hasntBeenUsed(c, organizedByTricks)
+      //   );
+      // }
+      const organizedTricks = utils.organizeByTrick(self.cards, true);
+      applySnapshot(self.cards, organizedTricks);
     },
+
     // superOrganize() {
     //   let newCards = [];
     //   let tricks = [];

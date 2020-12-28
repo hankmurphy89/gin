@@ -96,19 +96,15 @@ class Utilities {
       switch(sameRank.length){
         case 1:
           ofOne.push(sameRank)
-          console.log("should be array of one object", ofOne)
           break
         case 2:
           ofTwo.push(sameRank)
-          console.log("should be array of two objects", ofTwo)
           break
         case 3:
           ofThree.push(sameRank)
-          console.log("should be array of three object", ofThree)
           break
         default:
           ofFour.push(sameRank)
-          console.log("should be array of four objects", ofFour)
           break
       }
       remainingCards = allOthers
@@ -125,6 +121,46 @@ class Utilities {
     }
     return allRuns;
 
+  }
+
+  organizeByTrick(cards, flattened=false){
+    function hasntBeenUsed(card, usedArray) {
+      for (let i = 0; i < usedArray.length; i++) {
+        if (usedArray[i].id == card.id) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    let organizedByTricks = [];
+    let tricksArray = []
+    let remainingCards = cards;
+    while (remainingCards.length > 0) {
+      let sameRanksArray = this.getRankMatches(remainingCards);
+      let runsArray = this.getRuns(remainingCards);
+      let orderedCards;
+      if (runsArray[0].length >= sameRanksArray[0].length) {
+        orderedCards = runsArray[0];
+      } else {
+        orderedCards = sameRanksArray[0];
+      }
+      organizedByTricks.push(...orderedCards);
+      tricksArray.push(orderedCards);
+      remainingCards = remainingCards.filter((c) =>
+        hasntBeenUsed(c, organizedByTricks)
+      );
+    }
+    if (flattened) {
+      // let flattendTricks = [];
+      // let r;
+      // for (r of flattendTricks) {
+      //   flattendTricks.push(...r);
+      // }
+      // organizedByTricks = flattendTricks;
+      return organizedByTricks
+    }
+    return tricksArray;
   }
 
 }
