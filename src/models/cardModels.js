@@ -148,59 +148,87 @@ export const Hand = types
     },
 
     organize() {
-      let cs = [...self.cards];
-      // sort by suit then rank
-      cs.sort((a, b) =>
-        a.suit > b.suit
-          ? 1
-          : a.suit === b.suit
-          ? parseInt(a.rank) > parseInt(b.rank)
-            ? 1
-            : -1
-          : -1
+      const organizedCards = utils.organize(self.cards);
+      applySnapshot(self.cards, organizedCards);
+    },
+    organizeByRun() {
+      // let newCards = [];
+      let runsArray = utils.getRuns(self.cards, true);
+      console.log(runsArray);
+      console.log(utils.getRuns(self.cards));
+      applySnapshot(self.cards, runsArray);
+    },
+
+    organizeByRank() {
+      let sameRanksArray = utils.getRankMatches(self.cards, true);
+      console.log(sameRanksArray);
+      console.log(
+        "should be arrray of arrays containing rank matches",
+        utils.getRankMatches(self.cards)
       );
-      applySnapshot(self.cards, cs);
+      applySnapshot(self.cards, sameRanksArray);
     },
-    superOrganize() {
-      self.organize();
-      let newCards = [];
-      let tricks = [];
-      let almostTricks = [];
-      let nothin = [];
-      let run = [];
-      for (let i = 0; i < self.cards.length; i++) {
-        run.push({ ...self.cards[i] });
-        let j = i + 1;
-        while (
-          j < self.cards.length &&
-          self.cards[i].suit == self.cards[j].suit &&
-          parseInt(self.cards[i].rank) == parseInt(self.cards[j].rank) - 1
-        ) {
-          run.push({ ...self.cards[j] });
-          i += 1;
-          j += 1;
+
+    organizeByTrick() {
+      function hasntBeenUsed(card, usedArray){
+        for(let i=0; i<usedArray.length;i++){
+          if (usedArray[i].id == card.id) {
+            return false 
+          }
         }
-        switch (run.length) {
-          case 1:
-            nothin.push(...run);
-            // nothin.length == 0 ? nothin.push(run[0]) : nothin.concat(run);
-            break;
-          case 2:
-            almostTricks.push(...run);
-            // almostTricks.length == 0
-            //   ? almostTricks.push(run)
-            //   : almostTricks.concat(run);
-            break;
-          default:
-            tricks.push(...run);
-            // tricks.length == 0 ? tricks.push(run) : tricks.concat(run);
-            break;
-        }
-        run = [];
+        return true
       }
-      newCards.push(...tricks, ...almostTricks, ...nothin);
-      applySnapshot(self.cards, newCards);
+
+      let organizedByTricks = []
+      let remainingCards = self.cards
+      while (remainingCards.length>0){
+        let sameRanksArray = utils.getRankMatches(remainingCards)
+        let runsArray = utils.getRuns(remainingCards)
+        let orderedCards;
+        if (runsArray[0].length >= sameRanksArray[0].length){
+          orderedCards = runsArray[0]
+        } else {orderedCards = sameRanksArray[0]}
+        organizedByTricks.push(...orderedCards)
+        console.log("should be highest trick", orderedCards)
+        remainingCards = remainingCards.filter((c)=>hasntBeenUsed(c, organizedByTricks))
+      }
+      applySnapshot(self.cards, organizedByTricks)
     },
+    // superOrganize() {
+    //   let newCards = [];
+    //   let tricks = [];
+    //   let almostTricks = [];
+    //   let nothin = [];
+    //   let run = [];
+    //   for (let i = 0; i < self.cards.length; i++) {
+    //     run.push({ ...self.cards[i] });
+    //     //RUNS
+    //     let j = i + 1;
+    //     while (
+    //       j < self.cards.length &&
+    //       self.cards[i].suit == self.cards[j].suit &&
+    //       parseInt(self.cards[i].rank) == parseInt(self.cards[j].rank) - 1
+    //     ) {
+    //       run.push({ ...self.cards[j] });
+    //       i += 1;
+    //       j += 1;
+    //     }
+    //     switch (run.length) {
+    //       case 1:
+    //         nothin.push(...run);
+    //         break;
+    //       case 2:
+    //         almostTricks.push(...run);
+    //         break;
+    //       default:
+    //         tricks.push(...run);
+    //         break;
+    //     }
+    //     run = [];
+    //   }
+    //   newCards.push(...tricks, ...almostTricks, ...nothin);
+    //   applySnapshot(self.cards, newCards);
+    // },
 
     // organize(){
     //   let disorganizedCards = [...self.cards]
