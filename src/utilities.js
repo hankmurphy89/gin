@@ -282,14 +282,29 @@ class Utilities {
     return false;
   }
 
+  singlesRankAsc(tricksArray){
+    let singles = tricksArray.filter((a)=> a.length===1)
+    let multis = tricksArray.filter((a)=> a.length!==1)
+    let flatSingles = []
+    for (let a of singles){
+      flatSingles.push(...a)
+    }
+    flatSingles.sort((a,b)=> parseInt(a.rank) - parseInt(b.rank))
+
+    //add the ordered singles (as 1 item arrays) to the array of multis 
+    // to create an array of arrays containing all the cards
+    for (let c of flatSingles){
+      multis.push([c])
+    }
+    return multis
+  }
+
   organizeByTrick(cards, flattened = false) {
     cards = [...cards];
 
     let organizedByTricks = [];
     // this is the array returned for the snapshot
     let tricksArray = [];
-    // TODO: make thie reference a copy of cards:  [...cards]
-    // and get rid of the one above
     let remainingCards = cards;
     while (remainingCards.length > 0) {
       // While there are remaining cards,
@@ -366,6 +381,16 @@ class Utilities {
       // set remainingCards equal to the cards in itself
       // that haven't been added to organizedByTricks
     }
+    
+    // order the cards that aren't in a run of 2 or more by rank
+    // this will make it so in cards that have been organized
+    // with organizeByTrick, it always makes sense to discard 
+    // the card at the end of the card array
+
+    let tricksArrayRankAsc = this.singlesRankAsc(tricksArray)
+    let organizedByTricksRankAsc = []
+    tricksArrayRankAsc.map((t)=>organizedByTricksRankAsc.push(...t))
+
     if (flattened) {
       // let flattendTricks = [];
       // let r;
@@ -373,9 +398,9 @@ class Utilities {
       //   flattendTricks.push(...r);
       // }
       // organizedByTricks = flattendTricks;
-      return organizedByTricks;
+      return organizedByTricksRankAsc;
     }
-    return tricksArray;
+    return tricksArrayRankAsc;
   }
 }
 export const utils = new Utilities();
