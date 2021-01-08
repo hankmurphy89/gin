@@ -137,24 +137,84 @@ class Utilities {
     return true;
   }
 
-  includesCard(cards, card){
-    for (let i =0; i<cards.length; i++){
-      if (cards[i].id == card.id){
-        return true
+  includesCard(cards, card) {
+    for (let i = 0; i < cards.length; i++) {
+      if (cards[i].id == card.id) {
+        return true;
       }
     }
-    return false
+    return false;
   }
 
+  calcPoints(cards) {
+    let points = 0;
+    for (let c of cards) {
+      let p = c.rank >= 10 ? 10 : parseInt(c.rank);
+      points += p;
+    }
+    return points;
+  }
+
+  removeThisTrick(trick, tricks) {
+    function differentTrickTest(t1, t2) {
+      if (t1.length != t2.length) {
+        return true;
+      } else {
+        let i = 0;
+        t2.sort((a, b) => (a.id > b.id ? 1 : -1));
+        t1.sort((a, b) => (a.id > b.id ? 1 : -1));
+        while (i < t1.length) {
+          if (t1[i].id != t2[i].id) {
+            return true;
+          }
+          i++;
+        }
+        return false;
+      }
+    }
+    let allButThisTrick = tricks.filter((t) => differentTrickTest(t, trick));
+    return allButThisTrick;
+  }
+
+  checkBlocksOtherTricks(trick, tricksArray) {
+    // checks to see if using the cards in the current
+    // trick will get in the way of using them in more tricks
+    // or a different, better trick
+    let otherTricks = this.removeThisTrick(trick, tricksArray);
+    // array of tricks besides the current one
+    let trickObjects = [{ tCards: trick, points: this.calcPoints(trick) }];
+    for (let c of trick) {
+      //for each card in the current trick
+      for (let t of otherTricks) {
+        //for each trick in the possible tricks
+        if (this.includesCard(t, c)) {
+          // if the current card is in the current trick
+          let to = { tCards: t, points: this.calcPoints(t) };
+          trickObjects.push(to);
+        }
+      }
+    }
+    if (trickObjects.length == 2) {
+      trickObjects.sort((a, b) => b.points - a.points)
+      let biggerTrick = trickObjects[0];
+      return biggerTrick.tCards;
+    } else if (trickObjects.length > 2) {
+      let blockedTricks = trickObjects.slice(1);
+      blockedTricks.sort((a, b) => b.points - a.points)
+      let biggestTrick = blockedTricks[0];
+      return biggestTrick.tCards;
+    } else {
+      return false;
+    }
+  }
 
   checkExtras(longTrick, trickType, alreadyUsed, allCards) {
     let testForTricks = [];
-    // set the ineligibleCards array to those that have already been 
+    // set the ineligibleCards array to those that have already been
     let ineligibleCards;
     // used in another trick
 
-
-    if (trickType=="runs"){
+    if (trickType == "runs") {
       //get the extra cards to be tested for tricks
       let rem = longTrick.length % 3;
       let front = longTrick.slice(0, rem);
@@ -170,7 +230,7 @@ class Utilities {
       );
     } else {
       // for four of a kind, test all four cards
-      testForTricks = longTrick
+      testForTricks = longTrick;
     }
 
     // for each extra card
@@ -196,13 +256,16 @@ class Utilities {
       );
       // check for tricks in the eligibleCards that must contain
       //current extra card.
-      let otherTricksAndRuns = []
-      let runs = this.getRuns(eligibleCards)
-      otherTricksAndRuns.push(...runs)
-      let mr = this.getRankMatches(eligibleCards)
-      otherTricksAndRuns.push(...mr)
-      console.log("otherTricksAndRuns should be \
-      an array of arrays of runs and rank matches, some overlapping", otherTricksAndRuns)
+      let otherTricksAndRuns = [];
+      let runs = this.getRuns(eligibleCards);
+      otherTricksAndRuns.push(...runs);
+      let mr = this.getRankMatches(eligibleCards);
+      otherTricksAndRuns.push(...mr);
+      console.log(
+        "otherTricksAndRuns should be \
+      an array of arrays of runs and rank matches, some overlapping",
+        otherTricksAndRuns
+      );
       let tricksWithExtra = otherTricksAndRuns.filter(
         (a) => a.length >= 3 && this.includesCard(a, testForTricks[i])
       );
@@ -216,14 +279,11 @@ class Utilities {
       }
     }
     // if none of the extras create tricks with length >= 3, return false
-    return false
+    return false;
   }
 
-
   organizeByTrick(cards, flattened = false) {
-    cards = [...cards]
-    
-
+    cards = [...cards];
 
     let organizedByTricks = [];
     // this is the array returned for the snapshot
@@ -232,58 +292,70 @@ class Utilities {
     // and get rid of the one above
     let remainingCards = cards;
     while (remainingCards.length > 0) {
-      // While there are remaining cards, 
+      // While there are remaining cards,
       let sameRanksArray = this.getRankMatches(remainingCards);
       // give me the array of rankMatches
-      console.log("1. sameRanksArray should be array of rank matches\n2.are there duplicates across matches?\n", sameRanksArray)
       let runsArray = this.getRuns(remainingCards);
       // give me the array of run matches
-      console.log("runsArray should be array of run matches ", runsArray)
+      let allTricks = [...sameRanksArray, ...runsArray].filter(
+        (a) => a.length > 2
+      );
+      console.log("all runs", allTricks);
+
       let orderedCards;
       // orderedCards will be the current run or rank match
-      // from either the runsArray or sameRanksArray, 
+      // from either the runsArray or sameRanksArray,
       // depending on the length of the 0th element comparison
-      // from the runsArray if same length or the runsArray is 
+      // from the runsArray if same length or the runsArray is
       // longer
       let trickType;
       if (runsArray[0].length >= sameRanksArray[0].length) {
-        // if the 0th element in the runsArray is longer or equal 
+        // if the 0th element in the runsArray is longer or equal
         // length to the 0th element in the sameRanksArray
-        orderedCards = runsArray[0]
+        orderedCards = runsArray[0];
         // set the orderedCards variable to be the 0th runsArray
         // element
-        trickType = "runs"
+        trickType = "runs";
       } else {
-        orderedCards = sameRanksArray[0]
-        trickType = "runs"
-
+        orderedCards = sameRanksArray[0];
+        trickType = "runs";
       }
       if (orderedCards.length > 3) {
         // if orderedCards is a long trick, checkExtras
-        let extraTrick = this.checkExtras(orderedCards, trickType, organizedByTricks, cards);
+        let extraTrick = this.checkExtras(
+          orderedCards,
+          trickType,
+          organizedByTricks,
+          cards
+        );
         //checkExtras returns false if the extra cards in the long trick
         // can't be used to create another trick, otherwise it returns an array of cards
         // with the new trick in it
-        if (extraTrick){
-          orderedCards = extraTrick
-          // if the extra card could be used to make a trick 
+        if (extraTrick) {
+          orderedCards = extraTrick;
+          // if the extra card could be used to make a trick
           // with the other eligible cards, assign the extra trick
           // to orderedCards so this extra trick can be added
           // to organizedByTricks, the array whose snapshot
           // will be applied to the state tree. This will make
           // the extra from the long trick ineligible to be considered
           // for another trick
-        } 
-        else {
-          // otherwise, set orderedCards to equal only the cards in 
-          // itself that aren't already in organizedByTricks
-          // why is this filter needed? Shouldn't orderedCards already 
-          // avoid cards already used 
-          orderedCards = orderedCards.filter((c)=> this.hasntBeenUsed(c, organizedByTricks))
+        }
+        // else {
+        // otherwise, set orderedCards to equal only the cards in
+        // itself that aren't already in organizedByTricks
+        // why is this filter needed? Shouldn't orderedCards already
+        // avoid cards already used
+        // orderedCards = orderedCards.filter((c)=> this.hasntBeenUsed(c, organizedByTricks))
+        // }
+      }
+      console.log(allTricks);
+      if (orderedCards.length >= 3 && allTricks.length >= 2) {
+        let blockedTrick = this.checkBlocksOtherTricks(orderedCards, allTricks);
+        if (blockedTrick) {
+          orderedCards = blockedTrick;
         }
       }
-      console.log("orderedCards should be the long trick if the extras couldnt \
-      make another trick; should be extra and others if it could make a trick", orderedCards)
       organizedByTricks.push(...orderedCards);
       // add the elements from orderedCards to organizedByTricks
       tricksArray.push(orderedCards);

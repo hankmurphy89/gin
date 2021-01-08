@@ -177,6 +177,30 @@ export const Hand = types
       applySnapshot(self.cards, sameRanksArray);
     },
 
+    manuallySetCards(rankSuits){
+      let manualCards = []
+      for(let rs of rankSuits){
+        let s;
+        let r;
+        if (rs.length === 2){
+          r = rs[0]
+          s = rs[1]
+        } else {
+          r = rs.slice(0,2)
+          s = rs[2]
+        }
+        let c = {
+          rank: r,
+          suit: s,
+          flipped: true,
+          isGrabbed: false,
+          id: rs,
+        };
+        manualCards.push(c)
+      }
+      applySnapshot(self.cards, manualCards)
+    },
+
     organizeByTrick() {
       // function hasntBeenUsed(card, usedArray) {
       //   for (let i = 0; i < usedArray.length; i++) {
