@@ -161,8 +161,8 @@ class Utilities {
         return true;
       } else {
         let i = 0;
-        t2.sort((a, b) => (a.id > b.id ? 1 : -1));
-        t1.sort((a, b) => (a.id > b.id ? 1 : -1));
+        // t2.sort((a, b) => (a.id > b.id ? 1 : -1));
+        // t1.sort((a, b) => (a.id > b.id ? 1 : -1));
         while (i < t1.length) {
           if (t1[i].id != t2[i].id) {
             return true;
