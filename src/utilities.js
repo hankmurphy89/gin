@@ -31,6 +31,11 @@ class Utilities {
     return organizedCards;
   }
 
+  checkForGin(hand){
+    let res = hand.score() == 0 ? true : false
+    return res
+  }
+
   getRuns(cards, flattened = false) {
     // size can
     cards = this.organize(cards);
@@ -335,6 +340,15 @@ class Utilities {
         orderedCards = sameRanksArray[0];
         trickType = "runs";
       }
+
+      console.log(allTricks);
+      if (orderedCards.length >= 3 && allTricks.length >= 2) {
+        let blockedTrick = this.checkBlocksOtherTricks(orderedCards, allTricks);
+        if (blockedTrick) {
+          orderedCards = blockedTrick;
+        }
+      }
+
       if (orderedCards.length > 3) {
         // if orderedCards is a long trick, checkExtras
         let extraTrick = this.checkExtras(
@@ -363,13 +377,6 @@ class Utilities {
         // avoid cards already used
         // orderedCards = orderedCards.filter((c)=> this.hasntBeenUsed(c, organizedByTricks))
         // }
-      }
-      console.log(allTricks);
-      if (orderedCards.length >= 3 && allTricks.length >= 2) {
-        let blockedTrick = this.checkBlocksOtherTricks(orderedCards, allTricks);
-        if (blockedTrick) {
-          orderedCards = blockedTrick;
-        }
       }
       organizedByTricks.push(...orderedCards);
       // add the elements from orderedCards to organizedByTricks

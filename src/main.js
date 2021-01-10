@@ -149,6 +149,9 @@ export function advanceTurnStage(stage) {
     case "p1_turn":
       game.changeTurn();
       break;
+    case "round_over":
+      game.discardPile.cards[game.discardPile.cards.length-1].flip()
+      break;
   }
 }
 

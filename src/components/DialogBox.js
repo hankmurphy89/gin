@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { observer } from "mobx-react";
 import { game, takeDpCard, advanceTurnStage, discard, drawFromDeck } from "../main";
-import "../utilities";
+import { utils } from "../utilities";
 
 export class DialogBox extends Component {
   constructor() {
@@ -40,7 +40,12 @@ export class DialogBox extends Component {
         if (answer === "Yes") {
           let sc = game.whose_turn.selectedCard;
           discard(sc);
-          return advanceTurnStage("opponent_turn");
+          // check for gin
+          if(utils.checkForGin(game.whose_turn.hand)){
+            return advanceTurnStage("round_over")
+          } else {
+            return advanceTurnStage("opponent_turn");
+          }
         }
         break;
       case "p1_turn": // discard "discard the {card}?"

@@ -44,6 +44,7 @@ export const Game = types
       "opponent_draws_from_deck",
       "opponent_passes",
       "p1_turn",
+      "round_over",
     ]),
   })
   .actions((self) => ({
@@ -85,6 +86,11 @@ export const Game = types
           return [
             "What would you like to do",
             ["Draw from deck", "Take from discard pile"],
+          ];
+        case "round_over":
+          return [
+            `${self.whose_turn.name} gins!`,
+            [],
           ];
         default:
           return ["something went wrong", []];

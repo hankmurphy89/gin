@@ -1,10 +1,5 @@
-import {
-  game,
-  takeDpCard,
-  discard,
-  drawFromDeck,
-  advanceTurnStage,
-} from "./main";
+import { game, discard, advanceTurnStage } from "./main";
+import { utils } from "./utilities";
 
 export class Bot {
   constructor(difficulty) {
@@ -20,13 +15,27 @@ export class Bot {
   }
 
   discard() {
+    game.whose_turn.hand.organizeByTrick();
     switch (this.difficulty) {
       case "easy":
-        discard(this.chooseRandomCard());
+        const shortestRunHighestRank =
+          game.whose_turn.hand.cards[game.whose_turn.hand.cards.length - 1];
+        discard(shortestRunHighestRank);
+        // check for gin
+        if (utils.checkForGin(game.whose_turn.hand)) {
+          return advanceTurnStage("round_over");
+        } else {
+          return setTimeout(() => {
+            advanceTurnStage("p1_turn");
+          }, 2000);
+        }
     }
   }
 
   dpHelps() {
+    //TO DO: dp helps only if it creates a run bigger than the smallest run
+    // if the new run is the same size as the bot's smallest run (that doesn't make a trick, so either of length 1 or 2)
+    // only take it if it would reduce the points in the player's hand
     let dp = game.discardPile.cards[game.discardPile.cards.length - 1];
     let currentPlayerCards = game.whose_turn.hand.cards;
     let matchingRankCount = currentPlayerCards.filter(
@@ -56,8 +65,5 @@ export class Bot {
   decision() {
     let bo = this.findBestOption();
     advanceTurnStage(bo);
-    setTimeout(() => {
-      advanceTurnStage("p1_turn");
-    }, 2000);
   }
 }
