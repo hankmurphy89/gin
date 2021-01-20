@@ -34,7 +34,14 @@ export class DialogBox extends Component {
           takeDpCard();
           return advanceTurnStage("discard");
         } else {
-          return advanceTurnStage("opponent_initial_choice");
+          return advanceTurnStage("opponent_initial_rebuttal");
+        }
+      case "p1_initial_rebuttal": // initial message "do you want the {card}?"
+        if (answer === "Yes") {
+          takeDpCard();
+          return advanceTurnStage("discard");
+        } else {
+          return advanceTurnStage("opponent_initial_rebuttal");
         }
       case "discard": // discard "discard the {card}?"
         if (answer === "Yes") {

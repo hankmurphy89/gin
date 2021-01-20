@@ -116,8 +116,8 @@ export const Hand = types
       let c = detach(card);
       if (
         destinationHand.name == "p1_hand" ||
-        destinationHand.name == "discard_pile" ||
-        destinationHand.name == "opponent_hand"
+        destinationHand.name == "discard_pile" 
+        || destinationHand.name == "opponent_hand"
       ) {
         c.flipFaceUp();
       } else {
@@ -230,6 +230,9 @@ export const Hand = types
       // }
       const organizedTricks = utils.organizeByTrick(self.cards, true);
       applySnapshot(self.cards, organizedTricks);
+    },
+    clearAll(){
+      self.cards = []
     },
 
     // superOrganize() {

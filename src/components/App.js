@@ -1,6 +1,7 @@
 import React from "react";
 import { game } from "../main";
 import Board from "./BoardView";
+import ScoreBoard from "./ScoreBoard"
 import { DialogBox } from "./DialogBox";
 
 function App() {
@@ -10,7 +11,7 @@ function App() {
       <div className="game-container">
         <Board className="board-container" />
         <div className="info-container">
-          <div className="scoreboard" />
+          <ScoreBoard />
           <DialogBox className="dialog-box" />
         </div>
       </div>

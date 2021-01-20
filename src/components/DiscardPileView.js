@@ -9,9 +9,9 @@ export class DiscardPile extends Component {
 
   render() {
     const { cards } = this.props;
-    return cards.length === 0 ? null : (
+    return cards.length > 0 ? (
       <ul>{<Card card={cards[cards.length - 1]} />}</ul>
-    );
+    ) : (<ul/>)
   }
 }
 export default observer(DiscardPile);

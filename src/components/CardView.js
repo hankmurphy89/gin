@@ -60,10 +60,21 @@ export class Card extends Component {
     e.target.className = card.className;
   }
 
+  checkParent(card){
+    try {
+      let parentName = getParent(card, 3).name
+      return parentName
+    }
+    catch {
+      let parentName = false
+      return parentName
+    }
+  }
+
   render() {
     const { card } = this.props;
     // console.log(getParent(game.discardPile.cards[0], 3));
-    return getParent(card, 3).name === game.whose_turn.name ? (
+    return this.checkParent(card) === game.whose_turn.name ? (
       <img
         src={card.imagePath}
         onKeyDown={(e) => this.rearrangeCard(e, card)} //To do: refactor rearrangeCards to be more general e.g. "handleOnKeyDown"
@@ -78,6 +89,8 @@ export class Card extends Component {
       <img src={card.imagePath} className="card" alt="facedown card" />
     );
   }
+
+  
 }
 
 export default observer(Card);

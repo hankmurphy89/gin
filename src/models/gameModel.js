@@ -13,7 +13,7 @@ export const Player = types
     setSelectedCard(card) {
       self.selectedCard = card;
     },
-  }));
+  }))
 
 //This reference model lets me resolve players for whose_turn by name instead of ID
 //benefit is more readable code
@@ -28,6 +28,23 @@ export const PlayerByNameReference = types.maybeNull(
   })
 );
 
+export const RoundScore = types
+  .model({
+    roundNumber: types.identifierNumber,
+    p1Score: types.number,
+    p2Score: types.number,
+    key: types.string,
+
+  })
+  .actions((self) => ({
+    updateScores(p1Points, p2Points) {
+      self.p1Score = p1Points
+      self.p2Score = p2Points
+      self.key = `${self.roundNumber}-${p1Points}-${p2Points}`
+    },
+
+  }))
+
 export const Game = types
   .model({
     players: types.array(Player),
@@ -37,8 +54,10 @@ export const Game = types
     turn_stage: types.enumeration("Stage", [
       "game_lobby",
       "p1_initial_choice",
-      "discard",
+      "p1_initial_rebuttal",
       "opponent_initial_choice",
+      "discard",
+      "opponent_initial_rebuttal",
       "opponent_turn",
       "opponent_takes_dp",
       "opponent_draws_from_deck",
@@ -46,6 +65,9 @@ export const Game = types
       "p1_turn",
       "round_over",
     ]),
+    roundNumber: types.number,
+    score: types.array(RoundScore)
+
   })
   .actions((self) => ({
     changeTurn() {
@@ -56,15 +78,39 @@ export const Game = types
     changeTurnStage(stageName) {
       self.turn_stage = stageName;
     },
+    advanceRound(){
+      self.roundNumber +=1
+      self.score.push({roundNumber: self.roundNumber, p1Score:0, p2Score:0, key:`${self.roundNumber}-0-0`})
+
+    },
+    updateScoreboard(p1Points, p2Points){
+      self.score[self.roundNumber-1].updateScores(p1Points, p2Points)
+    },
+    clearCards(){
+      self.discardPile.clearAll()
+      self.deck.clearAll()
+      self.players[0].hand.clearAll()
+      self.players[1].hand.clearAll()
+    },
+    getDeck(deck){
+      self.deck = deck
+    }
+
   }))
   .views((self) => ({
     get dialogBoxContent() {
       switch (self.turn_stage) {
         case "p1_initial_choice":
-          return [
+
+          return self.discardPile.cards.length > 0 ? ([
             `Do you want the ${self.discardPile.cards[0].name}`,
             ["Yes", "No"],
-          ];
+          ]): ["loading",[]];
+        case "p1_initial_rebuttal":
+          return self.discardPile.cards.length > 0 ? ([
+            `Do you want the ${self.discardPile.cards[0].name}`,
+            ["Yes", "No"],
+          ]) : ["loading",[]];
         case "discard":
           return self.whose_turn.selectedCard
             ? [
@@ -72,6 +118,8 @@ export const Game = types
                 ["Yes", "No"],
               ]
             : ["Choose card to discard", []];
+        case "opponent_initial_rebuttal":
+          return ["Opponent turn", []];
         case "opponent_initial_choice":
           return ["Opponent turn", []];
         case "opponent_turn":

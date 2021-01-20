@@ -51,7 +51,7 @@ export class Bot {
 
   findBestOption() {
     switch (game.turn_stage) {
-      case "opponent_initial_choice":
+      case "opponent_initial_rebuttal":
         return this.dpHelps() ? "opponent_takes_dp" : "opponent_passes";
       case "opponent_turn":
         return this.dpHelps()
