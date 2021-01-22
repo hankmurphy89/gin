@@ -1,3 +1,5 @@
+import {advanceTurnStage} from "./main"
+
 class Utilities {
   matchesRank(card, cards) {
     let mr = cards.filter((c) => c.rank == card.rank && c.suit != card.suit);
@@ -31,10 +33,21 @@ class Utilities {
     return organizedCards;
   }
 
-  checkForGin(hand){
-    let res = hand.score() == 0 ? true : false
-    return res
+  checkFor11Card(playerHand){
+    if (playerHand.score() == 0 && playerHand.cards.length == 11){
+      return advanceTurnStage("round_over")
+    }
   }
+
+  roundOver(game){
+    if (game.whose_turn.hand.score() == 0){
+      return true
+    } else if (game.deck.cards.length == 0){
+      return true
+    }
+    return false
+  }
+
 
   getRuns(cards, flattened = false) {
     // size can

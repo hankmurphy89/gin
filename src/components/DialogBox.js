@@ -32,14 +32,22 @@ export class DialogBox extends Component {
       case "p1_initial_choice": // initial message "do you want the {card}?"
         if (answer === "Yes") {
           takeDpCard();
-          return advanceTurnStage("discard");
+          if(utils.roundOver(game)){
+            return advanceTurnStage("round_over")
+          } else {
+            return advanceTurnStage("discard");
+          }
         } else {
           return advanceTurnStage("opponent_initial_rebuttal");
         }
       case "p1_initial_rebuttal": // initial message "do you want the {card}?"
         if (answer === "Yes") {
           takeDpCard();
-          return advanceTurnStage("discard");
+          if(utils.roundOver(game)){
+            return advanceTurnStage("round_over")
+          } else {
+            return advanceTurnStage("discard");
+          }
         } else {
           return advanceTurnStage("opponent_initial_rebuttal");
         }
@@ -48,7 +56,7 @@ export class DialogBox extends Component {
           let sc = game.whose_turn.selectedCard;
           discard(sc);
           // check for gin
-          if(utils.checkForGin(game.whose_turn.hand)){
+          if(utils.roundOver(game)){
             return advanceTurnStage("round_over")
           } else {
             return advanceTurnStage("opponent_turn");
@@ -61,7 +69,12 @@ export class DialogBox extends Component {
         } else {
           takeDpCard()
         }
-        return advanceTurnStage("discard");
+        if(utils.roundOver(game)){
+          return advanceTurnStage("round_over")
+        } else {
+          return advanceTurnStage("discard");
+        }
+
       default:
     }
   }

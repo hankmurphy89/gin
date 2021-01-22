@@ -1,6 +1,7 @@
 import { Hand } from "./models/cardModels";
 import { Player, Game, RoundScore } from "./models/gameModel";
 import { Bot } from "./bot";
+import {utils} from "./utilities"
 
 const bot = new Bot("easy");
 
@@ -55,7 +56,6 @@ export const game = Game.create({
         cards: [],
         name: "p1_hand",
       },
-      points: 0,
     },
     {
       id: "2",
@@ -64,7 +64,6 @@ export const game = Game.create({
         cards: [],
         name: "opponent_hand",
       },
-      points: 0,
     },
   ],
   discardPile: {
@@ -119,6 +118,7 @@ export function discard(card) {
   game.whose_turn.setSelectedCard(undefined);
 }
 
+
 //get the current player's cards
 //add an onfocus so that when card is focused, display
 //that card's name in the dialog box
@@ -171,12 +171,14 @@ export function advanceTurnStage(stage) {
       break;
     case "opponent_takes_dp":
       takeDpCard();
+      utils.checkFor11Card(game.whose_turn.hand)
       setTimeout(() => {
         bot.discard();
       }, 2000);
       break;
     case "opponent_draws_from_deck":
       drawFromDeck();
+      utils.checkFor11Card(game.whose_turn.hand)
       setTimeout(() => {
         bot.discard();
       }, 2000);
@@ -185,7 +187,7 @@ export function advanceTurnStage(stage) {
       game.changeTurn();
       break;
     case "round_over":
-      game.discardPile.cards[game.discardPile.cards.length - 1].flip();
+      if (game.discardPile.cards.length > 0) {game.discardPile.cards[game.discardPile.cards.length - 1].flip()}
       game.updateScoreboard(game.players[1].hand.score(), game.players[0].hand.score())
       game.advanceRound()
       game.clearCards()// need to replace this with 

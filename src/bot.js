@@ -22,7 +22,7 @@ export class Bot {
           game.whose_turn.hand.cards[game.whose_turn.hand.cards.length - 1];
         discard(shortestRunHighestRank);
         // check for gin
-        if (utils.checkForGin(game.whose_turn.hand)) {
+        if (utils.roundOver(game)) {
           return advanceTurnStage("round_over");
         } else {
           return setTimeout(() => {
